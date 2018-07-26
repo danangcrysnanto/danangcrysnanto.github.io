@@ -1,0 +1,21 @@
+###
+###
+###
+###
+### Doctoral Student at ETH Zurich Switzerland <a href="https://www.ethz.ch/en.html"><img src="figs/eth_logo.png" width="40%" height="40%" align="right"></a>  
+<br></br>
+<br></br>
+<br></br>
+<font size="3.5">I am a first year PhD student at [Animal Genomics](http://www.ag.ethz.ch/) ETH Zurich Switzerland.  
+
+I am now responsible for setting up the pipelines for analyzing population-scale level of whole genome data sequencing.  
+
+Besides of that I am interested in data science particularly reproducible big data analysis and interactive big data visualization.  
+
+Before embarking for a PhD in Zurich, I studied for [MSc in Quantitative Genetics and Genome Analysis](http://qgen.bio.ed.ac.uk/) at the University of Edinburgh UK, where I received two awards for my master's project:  
+
+(1)  The Douglas Falconer Prize by Institute of Evolutionary of Biology Edinburgh UK  
+(2)  [Sir Kenneth Mather Memorial Prize](http://www.genetics.org.uk/medals-and-prizes/sir-kenneth-mather-memorial-prize/sir-kenneth-mather-memorial-prize-2016-17/) by the UK Genetics Society for an outstanding work in Population and Quantitative Genetics  
+<br></br>
+ 
+</font>

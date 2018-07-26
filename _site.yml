@@ -1,0 +1,19 @@
+name: "danang-website"
+output_dir: "."
+navbar:
+  title: "Danang Crysnanto"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Research"
+      href: research.html
+  right:
+   - icon: fa-envelope fa-lg
+     href: mailto:danang.crysnanto@usys.ethz.ch
+   - icon: fa-github fa-lg
+     href: https://github.com/danangcrysnanto
+   - icon: fa-twitter fa-lg
+     href: https://github.com/crdanang
+output:
+  html_document:
+    theme: flatly
