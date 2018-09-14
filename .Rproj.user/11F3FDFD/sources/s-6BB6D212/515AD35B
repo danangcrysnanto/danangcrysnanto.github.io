@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1536679691105.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "515AD35B",
+    "lastKnownWriteTime" : 1536764005,
+    "last_content_update" : 1536921908250,
+    "path" : "~/Google_Drive/other_project/ucd_comparison/R_ucd_analysis.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "1381,0",
+        "scrollLine" : "1360"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

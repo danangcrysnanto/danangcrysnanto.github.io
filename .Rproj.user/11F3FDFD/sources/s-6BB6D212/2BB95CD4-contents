@@ -1,0 +1,547 @@
+ggplot(datall,aes(x=coverage,y=concordance,col=program))+
+  geom_point() +
+  theme_bw()+
+  scale_fill_aaas()+
+  scale_colour_aaas()+
+  labs(x="Average of Chromosome 25 Coverage",y="Concordance with the Array (%)")+
+  coord_cartesian(ylim = c(80,100))
+
+datfil <- datall %>% 
+    filter(program %in% "samtools") 
+
+mean_prog=mean(sym(input$param)))
+
+datnov <- read.table(pipe("pbpaste"))
+ggplot(tsdat,aes(x=chr,y=ts,col=program))+
+geom_point()+
+geom_line()
+
+head(tsdat)
+ggplot(tsdat,aes(x=chr,y=ts,col=program))+
+geom_point()+
+geom_line()
+
+library("tidyverse")
+datcount <- read.table(pipe("pbpaste"),header=FALSE) 
+colnames(datcount) <- c("chrom","total_snp","snp_biallelic","total_indel","indel_biallelic","program")
+datcount <- datcount %>% mutate(snp_multi=total_snp-snp_biallelic)
+datcount <- datcount %>% mutate(indel_multi=total_indel-indel_biallelic)
+datcount %>% 
+  group_by(program) %>%  
+  summarise(sum_snp=sum(snp_biallelic),sum_indel=sum(indel_biallelic),sum_snpmulti=sum(snp_multi),sum_indel_multi=sum(indel_multi)) %>% 
+  write.table("variant_count.csv",sep=",",quote = FALSE)
+
+### Analysis ts/tv ----
+datts <- read.table("ts_tv.txt")
+colnames(datts) <- c("chr","tstv","program")
+datts %>% group_by(program) %>% summarize(tstv=mean(tstv))
+
+### Analysis fcgz
+dir()
+library(tidyverse)
+dat1 <- read.table("paper/compar1.tsv",stringsAsFactors = FALSE)
+colnames(dat1) <- c("position","array1","array2","ref","seq1","seq2")
+dat1 <- dat1 %>% select(position,ref,array1,array2,seq1,seq2)
+dat1$chr <- str_split_fixed(dat1$position,"_",2)[1]
+dat1$position <- str_split_fixed(dat1$position,"_",2)[,2]
+dat8 <- dat1 %>% select(chr,everything())
+dat1 %>% filter(seq1 != ref) %>% head()
+
+
+tesiris <- function(x,y) {
+  x <- enquo(x)
+  y <- enquo(y)
+  iris %>% group_by(!!x) %>% summarise(mean_t=mean(!!y))
+}
+
+tesiris <- function(x,y) {
+  iris %>% group_by(x) %>% summarise(mean_t=mean(y))
+}
+
+
+tesiris("Species","Sepal.Length")
+head(iris)
+### Combine all concordance files
+a <- 5
+quote(a+5)
+quote()
+
+
+### Analysis mendelian violations
+install.packages("magnitrr")
+mfile <- dir("paper_graph/result/mendel_viol/",pattern="*_mendel.txt")
+menfile <- lapply(paste0("paper_graph/result/mendel_viol/",mfile),function(x) read.table(x,header=FALSE)) %>% 
+  do.call(rbind,.)
+colnames(menfile) <- c("chr","program","animal","sire","total","deviate")
+menfile %<>% mutate(prop=deviate*100/total) %>% arrange(chr)
+menfile %>% group_by(program) %>% summarise(mean_prop=sum(deviate)*100/sum(total)) 
+selanim <- c("BSWCHEM110218087570","BSWCHEM111453050169","BSWCHEM120098716606")
+selsire <- c("BSWCHEM110293038924","BSWCHEM110280223340","BSWCHEM120047653969")
+menfile %>% filter((animal %in% selanim) & (sire %in% selsire)) %>% group_by(program ) %>% summarise(mean_prop=mean(prop)) 
+
+menfile %>% group_by(program ) %>% summarise(mean_prop=mean(prop)) 
+
+
+### infix function
+'%&%' <- function(a,b) {
+  paste0(a,b)  
+}
+
+"abc" %&% "def" 
+
+
+
+dat <-readLines(pipe("pbpaste"))
+library(tidyverse)
+dat <-matrix(scan(pipe("pbpaste")),ncol=4,byrow = TRUE)
+dat2 <- as.data.frame(dat)
+colnames(dat2) <- c("chr","position","time","con")
+dat2 %>% 
+filter(chr==12) %>% 
+ggplot(aes(x=position,y=time)) +
+  geom_line(size=1)+
+  geom_point(size=6,col="red")+
+  scale_x_continuous(breaks=seq(0,max(dat2$position),1))+
+  labs(x="position(MB)",y="time(second)")+
+  theme_bw()+
+  theme(axis.text = element_text(size=12),axis.title=element_text(size=20,face="bold"))
+    #facet_wrap(~chr)+
+  #coord_cartesian(ylim = c(0,20000))
+
+
+tot_time <- dat2 %>% group_by(chr) %>% summarise(sum_ch=sum(time))
+
+
+
+### GATK
+datgat <- read.table(pipe("pbpaste"))
+datgat %>% filter(V2 != "HaplotypeCaller") %>% group_by(V3) %>% 
+  summarise(sumch=sum(V4))
+
+datgat$V1 <- as.factor(datgat$V1)
+ggplot(datgat,aes(x=V1,y=V3,fill=V1)) +
+  geom_bar(stat="identity") +
+  scale_fill_gradient()
+
+
+### Combined
+
+install.packages("viridis")
+library(viridis)
+datall <- read.table(pipe("pbpaste")) 
+datxat <- read.table(pipe("pbpaste")) 
+dat2 <- rbind(datall,datxat)
+colnames(dat2) <- c("prog","step","chr","time")
+dat2$prog <- fct_reorder(dat2$prog,dat2$time,desc=FALSE)
+dat2 %>% 
+  filter(step !="imputation" & step!="hc_count") %>% 
+  ggplot(aes(x=chr,y=time,fill=prog))+
+  geom_bar(stat="identity",position="dodge",col="black") +
+  scale_x_continuous(breaks=seq(1,29))+
+  scale_fill_viridis(discrete = TRUE)+
+  theme_bw()
+
+dat2 <- read.table(pipe("pbpaste"))
+colnames(dat2) <- c("prog","step","chr","time")
+dat2 %>% 
+  filter(prog =="gatk" & step!="hc_count") %>% 
+  ggplot(aes(x=chr,y=time,fill=step))+
+  geom_bar(stat="identity",col="black") +
+  scale_x_continuous(breaks=seq(1,29))+
+  scale_fill_viridis(discrete = TRUE)+
+  theme_bw()
+
+
+### computation time more than 3600
+dat2 %>% filter(time > 3600)
+nrow(dat)
+dat2 %>% summarize(mean(time))
+dat2 %>% filter(con == 10)
+
+
+
+indelop <- read.table(pipe("pbpaste"),header = FALSE,stringsAsFactors = FALSE) 
+colnames(indelop) <- c("chr","prog","anims","sire","tot","dev")
+indelop %>% mutate(prop=dev*100/tot) %>% 
+  group_by(prog) %>% 
+  summarise(mean_p=mean(prop),count_i=sum(dev)/9,count_all=sum(tot)/9)
+
+
+A=18365318,B=17535291,C=18057202,A&B=16612383,A&C=16617909,B&C=16216068,A&B&C=15901526							
+install.packages("UpSetR")
+expressionInput <- c(one = 18365318, two = 17535291 , three = 18057202, `one&two` =16612383 , `one&three` =16617909 , 
+                     `two&three` = 16216068, `one&two&three` = 15901526)
+
+library(UpSetR)
+expressionInput <- c(one = 3, two = 3 , three = 3, `one&two` =1 , `one&three` =1 , 
+                     `two&three` = 1, `one&two&three` = 1)
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 2,text.scale = c(1.3, 1.3, 1, 1, 2, 0.75),
+      main.bar.color = "blue",
+      mainbar.y.label = "No of variants",
+      mb.ratio=c(0.8,0.2))
+expressionInput <- c(one = 16781, two = 17535 , three = 18057, `one&two` =16612, `one&three` =16617 , 
+                     `two&three` = 16216, `one&two&three` = 15902)
+expressionInput <- c(GATK = 1752935, SAMTOOLS = 608366 , GRAPHTYPER= 1124751, `GATK&SAMTOOLS` =710857, `GATK&GRAPHTYPER` =716383 , 
+                     `SAMTOOLS&GRAPHTYPER` = 314542, `GATK&SAMTOOLS&GRAPHTYPER` = 15901526)
+svg("snp_up.svg",width=10,height=10/1.61)
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      main.bar.color = "black",
+      mainbar.y.label = "Intersection of variants",
+      sets.x.label = "Total number of variants",
+      text.scale = 2,
+      mb.ratio=c(0.8,0.2),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+dev.off()
+
+expressionInput <- c(GATK = 461760, SAMTOOLS = 1117665 , GRAPHTYPER= 217387, `GATK&SAMTOOLS` =229907, `GATK&GRAPHTYPER` =177660 , 
+                     `SAMTOOLS&GRAPHTYPER` = 59133, `GATK&SAMTOOLS&GRAPHTYPER` = 1299467)
+svg("indel_up.svg",width=10,height=10/1.61)
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      main.bar.color = "black",
+      mainbar.y.label = "Intersection of Indels",
+      sets.x.label = "Total number of Indels",
+      text.scale = 2,
+      mb.ratio=c(0.8,0.2),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+dev.off()
+
+
+
+datp <- read.table(pipe("pbpaste"),stringsAsFactors = FALSE)
+dataxt <- datp %>% filter(str_detect(program,"xatlas"))
+datglb <- read.table(pipe("pbpaste"),stringsAsFactors = FALSE) %>% select(NRS:prog)
+cover <- datp %>% select(animals,coverage) %>%  distinct(animals,.keep_all = TRUE)
+head(datglb)
+colnames(datglb) <- colnames(datp)[1:6]
+colnames(datglb)
+colnames(cover)
+datglt <- left_join(datglb,cover,by=c("animals"))
+datgl <- pipe("pbpaste") %>% read.table(.,stringsAsFactors = FALSE) %>% select(NRS:prog)
+head(datgl)
+colnames(datgl) <- colnames(datglb)
+datb <- left_join(datgl,cover,by=c("animals"))
+head(datgltb)
+dat_xat <- rbind(dataxt,datb,datgltb)
+head(dat_xat)
+ggplot(dat_xat) +
+  geom_point(aes(x=coverage,y=concordance,col=program),size=3) +
+  scale_color_discrete(breaks=c("xatlas","xatlas_beagle","xatlas_gl","xatlas_beagle_gtgl"),
+                       labels=c("xatlas_bc","xatlas_bc_beagle","xatlas_gl","xatlas_gl_beagle"))+
+  theme(legend.position = c(0.8,0.8))
+
+
+write.table(dat_xat,file = "dat.xat")
+n
+dev.off()
+
+draw.quad.venn(area1=19035104,
+               area2 = 18365318,
+               area3=17535291,
+               area4 = 18057202,
+               n12=14896183,
+               n13=14864550,
+               n14=14570457,
+               n23=16612383,
+               n24=16617909,
+               n34=16216068,
+               n123=14444645,
+               n124=14277171,
+               n234=15901526,
+               n134=14174404,
+               n1234=13978438,
+               category=c("xatlas","gatk","samtools","graphtyper"),
+               fill = c("orange", "red", "green", "blue")
+               )
+
+expressionInput <- c(xAtlas=19035104,
+                     area2 = 18365318,
+                     area3=17535291,
+                     area4 = 18057202,
+                     n12=14896183,
+                     n13=14864550,
+                     n14=14570457,
+                     n23=16612383,
+                     n24=16617909,
+                     n34=16216068,
+                     n123=14444645,
+                     n124=14277171,
+                     n234=15901526,
+                     n134=14174404,
+                     n1234=13978438,)
+
+library(UpSetR)
+expressionInput <- c(xAtlas=3621696,
+GATK=883747,
+SAMtools=384427,
+Graphtyper=1027431,
+`xAtlas&GATK`=152805,
+`xAtlas&SAMtools`=195966,
+`xAtlas&Graphtyper`=97320,
+`GATK&SAMtools`=244650,
+`GATK&Graphtyper`=417650,
+`SAMtools&Graphtyper`=118576,
+`xAtlas&GATK&SAMtools`=466207,
+`xAtlas&GATK&Graphtyper`=298733,
+`GATK&SAMtools&Graphtyper`=1923088,
+`xAtlas&SAMtools&Graphtyper`=195966,
+`xAtlas&GATK&SAMtools&Graphtyper`=13978438
+)
+
+svg("snp_all.svg",width=10,height=10/1.61)
+
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      mainbar.y.label = "Intersection of variants",
+      sets.x.label = "Total number of variants",
+      text.scale = 2,
+      mb.ratio=c(0.75,0.25),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+
+dev.off()
+
+
+### Indel
+
+draw.quad.venn(area1=1898897,
+               area2=2168794,
+               area3=2706172,
+               area4=1753647,
+               n12=1639715,
+               n13=1554180,
+               n14=1419841,
+               n23=1529374,
+               n24=1477127,
+               n34=1358600,
+               n123=1434727,
+               n124=1405828,
+               n234=1299467,
+               n134=1323136,
+               n1234=1279253,
+               category=c("xatlas","gatk","samtools","graphtyper"),
+               fill = c("orange", "red", "green", "blue")
+)
+
+
+1898897
+2168794
+2706172
+1753647
+1639715
+1554180
+1419841
+1529374
+1477127
+1358600
+1434727
+1405828
+1299467
+1323136
+1279253
+
+expressionInput <- c(xAtlas=19035104,
+                     area2 = 18365318,
+                     area3=17535291,
+                     area4 = 18057202,
+                     n12=14896183,
+                     n13=14864550,
+                     n14=14570457,
+                     n23=16612383,
+                     n24=16617909,
+                     n34=16216068,
+                     n123=14444645,
+                     n124=14277171,
+                     n234=15901526,
+                     n134=14174404,
+                     n1234=13978438,)
+
+library(UpSetR)
+expressionInput <- c(xAtlas=3621696,
+                     GATK=883747,
+                     SAMtools=384427,
+                     Graphtyper=1027431,
+                     `xAtlas&GATK`=152805,
+                     `xAtlas&SAMtools`=195966,
+                     `xAtlas&Graphtyper`=97320,
+                     `GATK&SAMtools`=244650,
+                     `GATK&Graphtyper`=417650,
+                     `SAMtools&Graphtyper`=118576,
+                     `xAtlas&GATK&SAMtools`=466207,
+                     `xAtlas&GATK&Graphtyper`=298733,
+                     `GATK&SAMtools&Graphtyper`=1923088,
+                     `xAtlas&SAMtools&Graphtyper`=195966,
+                     `xAtlas&GATK&SAMtools&Graphtyper`=13978438
+)
+
+svg("snp_all.svg",width=10,height=10/1.61)
+
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      mainbar.y.label = "Intersection of variants",
+      sets.x.label = "Total number of variants",
+      text.scale = 2,
+      mb.ratio=c(0.75,0.25),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+
+dev.off()
+
+
+draw.quad.venn(area1=1898897,
+               area2=2168794,
+               area3=2706172,
+               area4=1753647,
+               n12=1639715,
+               n13=1554180,
+               n14=1419841,
+               n23=1529374,
+               n24=1477127,
+               n34=1358600,
+               n123=1434727,
+               n124=1405828,
+               n234=1299467,
+               n134=1323136,
+               n1234=1279253,
+               category=c("xatlas","gatk","samtools","graphtyper"),
+               fill = c("orange", "red", "green", "blue")
+)
+
+
+draw.triple.venn(area1=2244479,
+               area2=2480931,
+               area3=3078180,
+               n12=1809471,
+               n13=1654539,
+               n23=1630228,
+               n123=1513187,
+               category=c("xatlas","gatk","samtools"),
+               fill = c("orange", "red", "green")
+)
+
+draw.triple.venn(area1=2244479,
+               area2=2480931,
+               area3=2044841,
+               n12=1809471,
+               n13=1555382,
+               n23=1602981,
+               n123=1514471
+)
+
+dev.off()
+draw.quad.venn(area1=2244479,
+               area2=2480931,
+               area3=3078180,
+               area4=2044841,
+               n12=1809471,
+               n13=1654539,
+               n14=1620431,
+               n23=1630228,
+               n24=1602981,
+               n34=1427665,
+               n123=1513187,
+               n124=1514471,
+               n234=1358566,
+               n134=1381713,
+               n1234=1332966,
+               category=c("xatlas","gatk","samtools","graphtyper"),
+               fill = c("orange", "red", "green", "blue")
+)
+
+expressionInput <- c(xAtlas=236443,
+                     GATK=491509,
+                     SAMtools=1286248,
+                     Graphtyper=315548,
+                     `xAtlas&GATK`=114779,
+                     `xAtlas&SAMtools`=92605,
+                     `xAtlas&Graphtyper`=57213,
+                     `GATK&SAMtools`=91441,
+                     `GATK&Graphtyper`=62910,
+                     `SAMtools&Graphtyper`=20352,
+                     `xAtlas&GATK&SAMtools`=180221,
+                     `xAtlas&GATK&Graphtyper`=181505,
+                     `GATK&SAMtools&Graphtyper`=25600,
+                     `xAtlas&SAMtools&Graphtyper`=48747,
+                     `xAtlas&GATK&SAMtools&Graphtyper`=1332966
+)
+
+svg("indel_all.svg",width=10,height=10/1.61)
+
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      mainbar.y.label = "Intersection of variants",
+      sets.x.label = "Total number of variants",
+      text.scale = 2,
+      mb.ratio=c(0.75,0.25),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+dev.off()
+
+
+###SNP final
+
+expressionInput <- c(xAtlas=4150208,
+                     GATK=1066692,
+                     SAMtools=390228,
+                     Graphtyper=1037683,
+                     `xAtlas&GATK`=156800,
+                     `xAtlas&SAMtools`=229671,
+                     `xAtlas&Graphtyper`=100206,
+                     `GATK&SAMtools`=246801,
+                     `GATK&Graphtyper`=422167,
+                     `SAMtools&Graphtyper`=119183,
+                     `xAtlas&GATK&SAMtools`=470790,
+                     `xAtlas&GATK&Graphtyper`=302885,
+                     `GATK&SAMtools&Graphtyper`=1929243,
+                     `xAtlas&SAMtools&Graphtyper`=197004,
+                     `xAtlas&GATK&SAMtools&Graphtyper`=14016160
+)
+
+svg("snp_all_v2.svg",width=10,height=10/1.61)
+
+upset(fromExpression(expressionInput),point.size = 3.5, line.size = 1,
+      mainbar.y.label = "Intersection of variants",
+      sets.x.label = "Total number of variants",
+      text.scale = 2,
+      mb.ratio=c(0.75,0.25),
+      sets.bar.color = "cornflowerblue",
+      matrix.color = "orange")
+dev.off()
+
+
+# analyzing the overlap ---------------------------------------------------
+
+am <- list(a=c(1,2,3),b=c(4,5,6))
+
+
+
+
+###Rosalind amino table
+library("tidyverse")
+datam <- read.table(pipe("pbpaste"),header=FALSE)
+dattab <- datam %>% 
+  group_by(V4) %>% 
+  summarise(cn=n())
+
+
+
+
+ak <- list(4)
+ak[1] <- c(1,2)
+
+
+
+datsm <- read.table("small.txt",header = TRUE)
+anims <- unique(datsm$aa)
+rankanims <- list(length(anims))
+for (i in seq_along(anims)){ 
+  datspec <- datsm[datsm$aa==anims[i],]
+  rankanims[[i]] <- rank(datspec$ejak_nr_SG,ties="random")
+}
+datsm$totrank <- do.call(c,rankanims)
+
+
+
+# Pig_data ----------------------------------------------------------------
+
+pig_nf <- read.table(pipe("pbpaste"),header=FALSE)
+colSums(pig_nf)
+pig_nf_beag <- read.table(pipe("pbpaste"),header=FALSE)

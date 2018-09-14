@@ -1,0 +1,1383 @@
+
+# load lib ----------------------------------------------------------------
+
+library("tidyverse")
+library("ggsci")
+# Comparison_old_new ------------------------------------------------------
+setwd("~/Google_Drive/other_project/ucd_comparison")
+
+qualch <- read.table("12_umd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status))+
+  scale_fill_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+
+
+# pca_chr1 ----------------------------------------------------------------
+
+# eigen vect 1 & 2 
+egvec <- read.table("all_comb.eigenvec",header=FALSE)
+egan <- ifelse(str_detect(egvec$V1,"BSW"),"a","b")
+egvec$anim <- as.character(egvec$V1)
+anlab <- ifelse(str_detect(egvec$anim,"BSW"),"",egvec$anim)
+ggplot(egvec)+
+  geom_point(aes(V3,V4,col=egan),size=2,alpha=0.6,show.legend = FALSE)+
+  geom_text(aes(V3,V4),label=anlab,size=2,show.legend = FALSE,vjust=2,fontface="bold")+
+  scale_colour_brewer(palette = "Set1")+
+  theme_bw()+
+  coord_cartesian(x=c(-0.7,0.7))+
+  labs(x="PC1",y="PC2")
+
+
+# eigen vect 3 & 4 
+egvec <- read.table("all_comb.eigenvec",header=FALSE)
+egan <- ifelse(str_detect(egvec$V1,"BSWCHEM"),"a","b")
+egvec$anim <- as.character(egvec$V1)
+anlab <- ifelse(str_detect(egvec$anim,"BSW"),"",egvec$anim)
+ggplot(egvec)+
+  geom_point(aes(V4,V5,col=egan),size=2,alpha=0.6,show.legend = FALSE)+
+  geom_text(aes(V4,V5),label=anlab,size=2,show.legend = FALSE,vjust=1.6,fontface="bold")+
+  scale_colour_brewer(palette = "Set1")+
+  theme_bw()+
+  coord_cartesian(x=c(-1,1))+
+  labs(x="PC2",y="PC3")
+
+
+### eigen value
+egval <- read.table("all_comb.eigenval",header = FALSE)
+egval$prop <- egval$V1/sum(egval$V1)
+ggplot(egval)+
+  geom_col(aes(x=seq(1,20),y=V1),fill="seagreen",col="black")+
+  geom_text(aes(x=seq(1,20),y=V1+0.05,label=round(prop*100,2)))+
+  scale_x_continuous(breaks = seq(1,20))+
+  theme_bw()+
+  labs(x="PC",y="eigen value")
+
+            
+
+
+# hethom ------------------------------------------------------------------
+hetdat <- read.table("het_hom.stats",header=FALSE)
+hec <- scan(pipe("pbpaste"),what = "character")
+colnames(hetdat) <- hec
+hetdat <- hetdat %>% 
+  mutate(hetrat=nHets/( nRefHom + nNonRefHom + nHets))
+ggplot(hetdat) + 
+  geom_point(aes(x=fct_reorder(sample,hetrat),y=hetrat,col=fct_reorder(sample,hetrat)),show.legend = FALSE,size=2)+
+  theme_bw()+
+  theme(axis.text = element_text(angle=90,size=8),
+        axis.text.y = element_text(size = 12))+
+  scale_color_viridis_d()+
+  labs(x=NULL,y="heterozygosity")
+
+### persample tstv ratio
+hetdat$tstv <- hetdat$nTransitions/hetdat$nTransversions
+ggplot(hetdat) +
+  geom_point(aes(x=fct_reorder(sample,tstv),y=tstv,col=fct_reorder(sample,tstv)),size=2,show.legend = FALSE)+
+  theme_bw()+
+  theme(axis.text = element_text(angle=90,size=8),
+        axis.text.y = element_text(size = 12))+
+  scale_color_viridis_d()+
+  labs(x=NULL,y="persample tstv")
+
+
+
+
+
+# power eqtl --------------------------------------------------------------
+library("tidyverse",warn.conflicts = FALSE)
+library("powerEQTL")
+library("ggsci")
+sampsize <- seq(10,200,20)
+## Cis eQTL: number of gene * surrounding SNPs
+nSNP <- 100
+a <- 0.05
+maf <- seq(0.01,0.5,0.05)
+powdim <- as.data.frame(matrix(NA,nrow = length(sampsize),ncol =length(maf)))
+for (i in seq_along(sampsize)){
+  for(j in seq_along(maf)){
+    print(sampsize[i])
+    print(maf[j])
+    result <- powerEQTL.ANOVA(MAF=maf[j], 
+                              typeI=a, 
+                              nTests=nSNP, 
+                              myntotal=sampsize[i], 
+                              verbose = F)
+    powdim[i,j] <- result*100
+  }
+}
+
+
+### Plot
+powdim$samp <- paste0("sample_",as.character(sampsize))
+colnames(powdim)[-11] <- paste0("maf_",as.character(maf))
+longpow <- powdim %>% gather(maf_freq,power_per,maf_0.01:maf_0.46)
+longpow$samp <- fct_relevel(longpow$samp,paste0("sample_",as.character(sampsize)))
+            
+ggplot(longpow)+
+  geom_line(aes(x=maf_freq,y=power_per,col=samp,group=samp),size=1)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle=90),
+        legend.position = c(0.1,0.8),
+        legend.background = element_rect(colour = "black"),
+        axis.text = element_text(size=12))+
+  labs(x=NULL,y="Power(%)")+
+  scale_color_npg()
+
+
+
+# wright fisher rosalind --------------------------------------------------
+
+sapply(0:8, function(x) dbinom(x,8,6/8)) %>% sum()
+map_dbl(0:8, ~dbinom(.,8,6/8)) %>% sum()
+dbinom(0,8,1/8)
+dbinom(1,8,1/8)
+
+
+# for gen in range(2,g+1):
+#   temp_p = []
+# for j in range(1,2*N+1):
+#   temp_term = [comb(2*N, j)*((x/(2.0*N))**j)*(1.0-(x/(2.0*N)))**(2*N-j) for x in range(1,2*N+1)]
+# temp_p.append(sum([temp_term[i]*p[i] for i in range(len(temp_term))]))
+# p = temp_p
+N <- 2*4
+m <- 6
+gen <- 2
+k <- 1
+p <- sapply(1:N, function(x) dbinom(x,N,(1-m/N)))
+for (k in 2:gen){
+  temp_p <- numeric(N)
+  for (j in 1:N){
+    temp_term <- map_dbl(1:N, ~dbinom(j,N,./N))
+    temp_p[j] <- sum(temp_term*p)
+}
+  p <- temp_p
+}
+
+if(k == 1){
+  print(sum(p))
+} else {
+  print(sum(p[(k-1):length(k)]))
+}
+
+
+N <- 2*6
+m <- 6
+gen <- 2
+k <- 1
+p <- sapply(0:N, function(x) dbinom(x,N,(1-m/N)))
+for (q in 2:gen){
+  temp_p <- numeric(N+1)
+  for (j in 0:N+1){
+    temp_term <- map_dbl(0:N, ~dbinom(j,N,./N))
+    temp_p[j] <- sum(temp_term*p)
+  }
+  p <- temp_p
+}
+
+if(k == 1){
+  print(sum(p))
+} else {
+  print(sum(p[(k-1):length(p)]))
+}
+
+
+
+N <- 2*6
+m <- 9
+gen <- 4  
+k <- 5
+p <- sapply(1:N, function(x) dbinom(x,N,(1-m/N)))
+for (q in 2:gen){
+  temp_p <- numeric(N)
+  for (j in 1:N){
+    temp_term <- map_dbl(1:N, ~dbinom(j,N,./N))
+    temp_p[j] <- sum(temp_term*p)
+  }
+  p <- temp_p
+}
+
+if(k == 1){
+  print(sum(p))
+} else {
+  print(sum(p[(k):length(p)]))
+}
+
+
+
+# Wright-fisher_expected --------------------------------------------------
+
+ntot <- 812102
+prob <- read.table(pipe("pbpaste"))
+
+
+
+
+# mapping rate ------------------------------------------------------------
+library("tidyverse")
+library("ggsci")
+library("cowplot")
+library("ggpubr")
+library("plotly")
+ucd_rate <- read.table("ucd_mapping_rate.txt")
+umd_rate <- read.table("umd_mapping_rate.txt")
+colnames(ucd_rate) <- c("anims","mapping_rate","assembly")
+colnames(umd_rate) <- c("anims","mapping_rate","assembly")
+mapping_tot <- rbind(ucd_rate,umd_rate)
+mapping_tot <- mapping_tot %>% 
+               mutate(anims=fct_reorder(anims,mapping_rate))
+pointmap <- ggplot(mapping_tot)+
+  geom_point(aes(x=anims,y=mapping_rate,col=assembly),size=2,alpha=0.7)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle=90),
+        legend.position = c(0.9,0.2),
+        legend.background = element_rect(colour = "black"),
+        panel.spacing = unit(1,'lines'),
+        axis.text.y = element_text(size = 12),
+        axis.title = element_text(size=14,face="bold"))+
+  scale_color_aaas()+
+  labs(x=NULL,y="Mapping Rate(%)")+
+  NULL
+
+boxmap <- ggplot(mapping_tot,aes(x=assembly,y=mapping_rate,col=assembly))+
+    geom_boxplot(aes(x=assembly,y=mapping_rate,col=assembly),
+                 show.legend = FALSE,
+                 outlier.shape = NA)+
+  geom_jitter(aes(x=assembly,y=mapping_rate,col=assembly),
+              size=0.75,
+              width=0.15,
+              alpha=0.5,
+              show.legend = FALSE)+
+  stat_compare_means(show.legend = FALSE,
+                     label.x = 1,
+                     label.y=90,
+                     size=3)+
+  theme_bw()+
+  scale_color_aaas()+
+  scale_fill_aaas()+
+  scale_x_discrete()+
+  labs(y=NULL)+
+  NULL
+
+
+ggdraw()+
+  draw_plot(pointmap,0,0,1,1)+
+  draw_plot(boxmap,0.75,0.45,0.2,0.25)
+
+filter(iris, species=="virginica")
+head(mapping_tot)
+datucd <- mapping_tot %>% filter(assembly=="ucd")
+datumd <- mapping_tot %>% filter(assembly=="umd")
+datjoin <- datucd %>% inner_join(datumd,by="anims")
+datjoin$diff <- datjoin$mapping_rate.x-datjoin$mapping_rate.y
+t.test(datjoin$mapping_rate.x,datjoin$mapping_rate.y,paired = TRUE)
+datdiff <- ggplot(datjoin)+
+  geom_point(aes(x=fct_reorder(anims,diff),
+                 y=diff,
+                 col=fct_reorder(anims,diff)),
+                 show.legend = FALSE,size=2)+
+  scale_color_viridis_d()+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90,size=8),
+        axis.title = element_text(size=12,face="bold"))+
+  labs(x=NULL,y="Mapping Rate Improvement (%)")
+
+
+
+ggdraw()+
+  draw_plot(datdiff,0,0,1,1)+
+  draw_plot(boxmap,0.1,0.6,0.2,0.3)
+ggplotly(boxmap)
+
+head(datjoin)
+
+
+datjoin %>% 
+  filter(mapping_rate.x<97.5)
+
+
+# quality_by_MAF -----------------------------------------------------------
+library("tidyverse")
+library("ggsci")
+setwd("~/Google_Drive/paper/paper_graph/result/nrf_analysis")
+dir()
+datnrf <- read.table("gatk_bynrf2.tsv",header=TRUE)
+dat2 <- datnrf %>% filter(anims != "BSWCHEM120111313935")
+head(dat2)
+dat2 <- dat2 %>% rename(nrf_bin=chr)
+
+dat2 %>% group_by(nrf_bin) %>%
+  summarise(msen=mean(NRS),ssen=sd(NRS)/sqrt(n())) %>% 
+  ggplot(aes(x=nrf_bin,y=msen))+
+  geom_point(col="red",size=2)+
+  geom_line(col="red")+
+  geom_errorbar(aes(x=nrf_bin,ymin=msen-ssen,ymax=msen+ssen),width=0.05,size=0.5)+
+  scale_y_continuous(limits = c(80,100))+
+  scale_x_continuous(breaks=seq(1,5) ,labels=seq(0.1,0.5,length.out = 5))+
+  theme(axis.text = element_text(size=14))+
+  labs(x="Non-reference allele frequency bin",y="Sensitivity (%)")
+
+
+dat2 %>% group_by(nrf_bin) %>%
+  summarise(msen=mean(NRD),ssen=sd(NRD)/sqrt(n())) %>% 
+  ggplot(aes(x=nrf_bin,y=msen))+
+  geom_point(col="red")+
+  geom_line(col="red")+
+  geom_errorbar(aes(x=nrf_bin,ymin=msen-ssen,ymax=msen+ssen),width=0.05,size=0.5)+
+  scale_y_continuous(limits = c(0,20))+
+  scale_x_continuous(breaks=seq(1,5) ,labels=seq(0.1,0.5,length.out = 5))+
+  theme(axis.text = element_text(size=14))+
+  labs(x="Non-reference allele frequency bin",y="Discrepancy (%)")
+
+
+dat2 %>% group_by(nrf_bin) %>%
+  summarise(msen=mean(concor),ssen=sd(concor)/sqrt(n())) %>% 
+  ggplot(aes(x=nrf_bin,y=msen))+
+  geom_jitter(data=dat2,aes(x=nrf_bin,y=concor),size=1.5,alpha=0.5,width=0.10)+
+  geom_point()+
+  geom_line(col="red",size=1)+
+  geom_errorbar(aes(x=nrf_bin,ymin=msen-ssen,ymax=msen+ssen),width=0.1)+
+  scale_y_continuous(limits = c(80,100))+
+  scale_x_continuous(breaks=seq(1,5) ,labels=seq(0.1,0.5,length.out = 5))+
+  theme_bw()+
+  theme(axis.text = element_text(size=14))+
+  labs(x="Non-reference allele frequency bin",y="Concordance (%)")
+
+
+ggplot(dat2)+
+  geom_boxplot(aes(x=nrf_bin,y=NRS,group=nrf_bin,col=nrf_bin),size=0.75)+
+  geom_jitter(aes(x=nrf_bin,y=NRS,group=nrf_bin,col=nrf_bin),size=1,alpha=0.5)+
+  coord_cartesian(ylim=c(50,100))
+
+
+
+ggplot(dat2)+
+  geom_boxplot(aes(x=nrf_bin,y=NRD,group=nrf_bin,col=nrf_bin),size=0.5,show.legend = FALSE)+
+  geom_jitter(aes(x=nrf_bin,y=NRD,group=nrf_bin,col=nrf_bin),size=1.5,alpha=0.5,width=0.1,show.legend = FALSE)+
+  coord_cartesian(ylim=c(0,50))
+
+
+datcomb <- read.table("all_comp3.tsv",header = TRUE)
+datcomb$impute <- ifelse(str_detect(datcomb$prog,"beagle"),"BEAGLE","Raw")
+colnames(datcomb)
+datcomb$prog2 <- gsub("_beagle","",datcomb$prog)
+datcomb <- datcomb %>% mutate(impute=fct_relevel(datcomb$impute,"Raw","BEAGLE"))
+psr <- ggplot(datcomb)+
+  geom_boxplot(aes(x=as.factor(chr),y=NRD,col=impute),
+               position = position_dodge(width = 0.9),outlier.shape=NA)+
+  geom_jitter(aes(x=chr,y=NRD,col=impute),
+              size=0.8,
+              alpha=0.7,
+              position = position_jitterdodge(dodge.width=0.8))+
+  facet_wrap(~prog2) +
+  coord_cartesian(ylim=c(0,20))+
+  theme_bw()+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=14,face="bold"),
+        strip.text = element_text(size=12),
+        legend.position = c(0.9,0.85),
+        legend.background = element_rect(colour = "black"))+
+  labs(x="Non-Reference Allele Frequency",y="Discrepancy") +
+  scale_x_discrete(labels=seq(0.1,0.5,length.out = 5))+
+  scale_color_brewer(palette = "Set1",name=NULL)
+  
+pdr <- ggplot(datcomb)+
+  geom_boxplot(aes(x=as.factor(chr),y=NRS,col=impute),
+               position = position_dodge(width = 0.9),outlier.shape=NA)+
+  geom_jitter(aes(x=chr,y=NRS,col=impute),
+              size=0.8,
+              alpha=0.7,
+              position = position_jitterdodge(dodge.width=0.8))+
+  facet_wrap(~prog2) +
+  coord_cartesian(ylim=c(90,100))+
+  theme_bw()+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=14,face="bold"),
+        strip.text = element_text(size=12),
+        legend.position = c(0.93,0.12),
+        legend.background = element_rect(colour = "black"))+
+  labs(x="Non-Reference Allele Frequency",y="Sensitivity") +
+  scale_x_discrete(labels=seq(0.1,0.5,length.out = 5))+
+  scale_color_brewer(palette = "Set1",name=NULL)
+
+
+
+pcr <- ggplot(datcomb)+
+  geom_boxplot(aes(x=as.factor(chr),y=con2,col=impute),
+               position = position_dodge(width = 0.9),outlier.shape=NA)+
+  geom_jitter(aes(x=chr,y=con2,col=impute),
+              size=0.8,
+              alpha=0.7,
+              position = position_jitterdodge(dodge.width=0.8))+
+  facet_wrap(~prog2) +
+  coord_cartesian(ylim=c(80,100))+
+  theme_bw()+
+  theme(axis.text.y = element_text(size=12),
+        axis.text.x = element_text(size=10),
+        axis.title = element_text(size=14,face="bold"),
+        strip.text = element_text(size=12),
+        legend.position = c(0.93,0.1),
+        legend.background = element_rect(colour = "black"))+
+  labs(x="Non-Reference Allele Frequency",y="Genotype Concordance") +
+  scale_x_discrete(labels=seq(0.1,0.5,length.out = 5))+
+  scale_color_brewer(palette = "Set1",name=NULL)
+
+pcr
+pdr
+psr
+ggsave(plot = psr,"discre_nrf.pdf",device="pdf",width=10,height=5)
+lax <- c("0-0.1","0.1-0.2","0.2-0.3","0.3-0.4","0.4-0.5")
+pcr
+nomcor <- paste0("index_",c("E","I"))
+denomcor <- paste0("index_",LETTERS[2:9])
+con2 <- (datcomb[nomcor] %>% rowSums)*100/(datcomb[denomcor] %>% rowSums)
+pcr
+datcomb$con2 <-  con2
+datcomb[denomcor] 
+
+
+### All range of frequency
+allf <- read.table("all_maf.tsv",header = TRUE)
+allf$impute <- ifelse(str_detect(allf$prog,"beagle"),"BEAGLE","Raw")
+colnames(allf)
+allf$prog2 <- gsub("_beagle","",allf$prog)
+
+nomcor <- paste0("index_",c("E","I"))
+denomcor <- paste0("index_",LETTERS[2:9])
+allf$con2 <- (allf[nomcor] %>% rowSums)*100/(allf[denomcor] %>% rowSums)
+
+ggplot(allf)+
+  geom_boxplot(aes(x=as.factor(chr),y=con2,col=impute),
+               position = position_dodge(width = 0.9),outlier.shape=NA)+
+  geom_jitter(aes(x=chr,y=con2,col=impute),
+              size=0.8,
+              alpha=0.7,
+              position = position_jitterdodge(dodge.width=0.8))+
+  facet_wrap(~prog2) +
+  coord_cartesian(ylim=c(50,100))+
+  theme_bw()+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=14,face="bold"),
+        strip.text = element_text(size=12),
+        legend.position = c(0.93,0.12),
+        legend.background = element_rect(colour = "black"))+
+  labs(x="Non-Reference Allele Frequency",y="Sensitivity") +
+  scale_x_discrete(labels=seq(0.1,1,length.out = 10))+
+  scale_color_brewer(palette = "Set1",name=NULL)
+
+
+### Folded MAF
+datm <- read.table("all_maf_folded.tsv",header=TRUE)
+datfold <- datm %>% select(paste0("index_",LETTERS[1:12]),"anims","maf","prog") %>% 
+  group_by(anims,maf,prog) %>% 
+  summarise_all(funs(sum))
+
+nomcor <- paste0("index_",c("A","E","I"))
+denomcor <- paste0("index_",LETTERS[1:9])
+datfold$con <- (datfold[nomcor] %>% rowSums)*100/(datfold[denomcor] %>% rowSums)
+
+nomsen <- paste0("index_",c("E","F","H","I"))
+denomsen <- c(nomsen,paste0("index_",c("B","C","K","L")))
+datfold$sen <- (datfold[nomsen] %>% rowSums)*100/(datfold[denomsen] %>% rowSums)
+datfold$impute <- ifelse(str_detect(datfold$prog,"beagle"),"BEAGLE","Raw")
+colnames(datfold)
+datfold$prog2 <- gsub("_beagle","",datfold$prog)
+
+
+nomdis <- paste0("index_",c("B","C","D","F","G","H"))
+denomdis <- paste0("index_",LETTERS[2:9])
+datfold$dis <- (datfold[nomdis] %>% rowSums)*100/(datfold[denomdis] %>% rowSums)
+
+ggplot(datfold)+
+  geom_boxplot(aes(x=as.factor(maf),y=dis,col=impute),
+               position = position_dodge(width = 0.9),outlier.shape=NA)+
+  geom_jitter(aes(x=maf,y=dis,col=impute),
+              size=0.8,
+              alpha=0.7,
+              position = position_jitterdodge(dodge.width=0.8))+
+  facet_wrap(~prog2) +
+  coord_cartesian(ylim=c(0,50))+
+  theme_bw()+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=14,face="bold"),
+        strip.text = element_text(size=12),
+        legend.position = c(0.93,0.12),
+        legend.background = element_rect(colour = "black"))+
+  labs(x="Minor Allele Frequency",y="Concordance") +
+  scale_x_discrete(labels=seq(0.1,0.5,length.out = 5))+
+  scale_color_brewer(palette = "Set1",name=NULL)
+
+# discre_SNP --------------------------------------------------------------
+
+setwd("~/Google_Drive/other_project/ucd_comparison/discre_umd")
+dir()
+
+datgat <- read.table("gatk_umd_discre.lgen",header=FALSE)
+colnames(datgat) <- c("fams","anims","variants","seq1","seq2")
+datgat$comp <- rep("gatk",nrow(datgat))
+head(datgat)
+
+
+datgen <- read.table("geno_umd_discre.lgen",header=FALSE)
+colnames(datgen) <- c("fams","anims","variants","array1","array2")
+datgen$comp <- rep("geno",nrow(datgen))
+head(datgen)
+
+datjoin <- datgat %>% inner_join(datgen,by = c("anims","variants"))
+dir()
+cdis <- read.table("gatk_discre",header = TRUE)
+ndis <- read.table("NRSD_gatk4_25.temp",header = TRUE)
+tdis <- rbind(cdis %>% select(-chr),ndis %>% select(-chr))
+
+head(tdis)
+pb <- ggplot(tdis,aes(x=prog,y=NRS,col=prog)) +
+  geom_boxplot(show.legend = FALSE)+
+  geom_jitter(width=0.1,show.legend = FALSE)+
+  scale_color_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(axis.text = element_text(size=14))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Non-Reference Sensitivity")
+ggsave("sensi_disc.pdf",width=6,height=6)
+
+pc <- ggplot(tdis,aes(x=prog,y=NRD,col=prog)) +
+  geom_boxplot()+
+  geom_jitter(width=0.1)+
+  scale_color_brewer(palette = "Set1",name=NULL)+
+  theme_bw()+
+  theme(axis.text = element_text(size=14),
+        legend.position=c(0.8,0.9),
+        legend.background = element_rect(colour="black"),
+        legend.text = element_text(size=12))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Non-Reference Discrepancy")
+ggsave("discre_disc.pdf",width=6,height=6)
+
+library("ggsci")
+
+pa <- ggplot(tdis,aes(x=prog,y=concor,col=prog)) +
+  geom_boxplot(show.legend = FALSE)+
+  geom_jitter(width=0.1,show.legend = FALSE)+
+  scale_color_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(axis.text = element_text(size=14))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Genotype Concordance")
+
+library("cowplot")
+plot_grid(pa,pb,pc,labels="AUTO",ncol=3)
+ggsave("discre_comparison.pdf")
+
+
+
+# preparing all and without problematic SNPs -------------------------------------------
+setwd("~/Google_Drive/other_project/ucd_comparison/discre_umd")
+library("tidyverse")
+datall <- read.table("gatk_all_fix.tsv",header=TRUE)
+datrem <- read.table("gatk_nodiscre.tsv",header=TRUE)
+datsm <- read.table("gatk_small_discre_fixed.tsv",header=TRUE)
+##Acroos chr info
+datall <- datall %>% group_by(anims,prog) %>% 
+  summarise(concor=mean(concor),NRS=mean(NRS),NRD=mean(NRD)) %>% as.data.frame()
+
+datrem <- datrem %>% group_by(anims,prog) %>% 
+  summarise(concor=mean(concor),NRS=mean(NRS),NRD=mean(NRD)) %>% as.data.frame()
+
+datsm <- datsm %>% group_by(anims,prog) %>% 
+  summarise(concor=mean(concor),NRS=mean(NRS),NRD=mean(NRD)) %>% as.data.frame()
+
+## Select only relevant column
+datds <- cdis %>% select(anims,prog,concor,NRS,NRD)
+datcb <- rbind(datall,datrem,datds,datsm)
+tail(datcb)
+
+
+pa <- ggplot(datcb,aes(x=prog,y=concor,col=prog)) +
+  geom_boxplot(show.legend = FALSE)+
+  geom_jitter(width=0.1,show.legend = FALSE)+
+  scale_color_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(axis.text = element_text(size=14))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Genotype Concordance")
+
+
+pb <- ggplot(datcb,aes(x=prog,y=NRS,col=prog)) +
+  geom_boxplot(show.legend = FALSE)+
+  geom_jitter(width=0.1,show.legend = FALSE)+
+  scale_color_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(axis.text = element_text(size=14))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Non-Reference Sensitivity")
+
+pc <- ggplot(datcb,aes(x=prog,y=NRD,col=prog)) +
+  geom_boxplot()+
+  geom_jitter(width=0.1)+
+  scale_color_brewer(palette = "Set1",name=NULL)+
+  theme_bw()+
+  theme(axis.text = element_text(size=14),
+        legend.position=c(0.2,0.87),
+        legend.background = element_rect(colour="black"),
+        legend.text = element_text(size=12))+
+  scale_x_discrete(labels=NULL,name=NULL)+
+  labs(y="Non-Reference Discrepancy")
+
+plot_grid(pa,pb,pc,labels="AUTO",ncol=3)
+ggsave("discre_comparison_sm.pdf")
+
+
+# ucd_comaprison_graph ---------------------------------------------------------------
+library("ggplot2")
+setwd("~/Google_Drive/paper/paper_graph/result/computation_time/ucd_comparison")
+dir()
+datumd <- read.table("12_temp_corr.txt",header=FALSE)
+datumd <- datumd[1:3]
+datucd <- read.table("ch12_ucd.tsv",header=FALSE)
+head(datucd)
+colnames(datucd) <- c("chr","chunk","time")
+colnames(datumd)<- c("chr","chunk","time")
+datucd$assembly <- rep("ucd",length=nrow(datucd))
+datumd$assembly <- rep("umd",length=nrow(datumd))
+dattime <- rbind(datucd,datumd)
+dattime$chunk2 <- dattime$chunk * 1000000
+pd <- ggplot(dattime,aes(x=chunk2,y=time,col=assembly))+
+  geom_point()+
+  geom_line()+
+  theme_grey()+
+  theme(legend.position = c(0.9,0.9))+
+  scale_color_brewer(palette = "Set1")
+
+head(datumd)
+setwd("~/Google_Drive/other_project/ucd_comparison")
+
+qualch <- read.table("12_umd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+datum <- ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status),show.legend=FALSE)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+datuc
+datum
+library(cowplot)
+ps <- plot_grid(datum,datuc,nrow=2,align="v")
+pg <- plot_grid(pd,pden,datum,datuc,nrow=4,rel_heights = c(1,0.4,0.2,0.2))
+pg
+
+ggsave(ps,file="ps.png",width=25,height=3)
+
+
+dir()
+denumd <- read.table("ch12_umd_den.snpden",header=TRUE)
+denucd <- read.table("ch12_ucd_den.snpden",header=TRUE)
+denumd$assembly <- rep("umd",nrow(denumd))
+denucd$assembly <- rep("ucd",nrow(denucd))
+dendat <- rbind(denumd,denucd)
+pden <- ggplot(dendat,aes(x=BIN_START,y=SNP_COUNT,col=assembly)) +
+  geom_line(show.legend = FALSE)+
+  theme_grey()+
+  scale_color_brewer(palette = "Set1")
+
+
+
+
+# ucd_comparison_29 -------------------------------------------------------
+
+ibrary("ggplot2")
+setwd("~/Google_Drive/paper/paper_graph/result/computation_time/ucd_comparison")
+dir()
+datumd <- read.table("29_umd.txt",header=FALSE)
+datumd <- datumd[1:3]
+datucd <- read.table("29_ucd.tsv",header=FALSE)
+head(datucd)
+colnames(datucd) <- c("chr","chunk","time")
+colnames(datumd)<- c("chr","chunk","time")
+datucd$assembly <- rep("ucd",length=nrow(datucd))
+datumd$assembly <- rep("umd",length=nrow(datumd))
+dattime <- rbind(datucd,datumd)
+dattime$chunk2 <- dattime$chunk * 1000000
+pd <- ggplot(dattime,aes(x=chunk2,y=time,col=assembly))+
+  geom_point()+
+  geom_line()+
+  theme_grey()+
+  theme(legend.position = c(0.9,0.9))+
+  scale_color_brewer(palette = "Set1")
+pd
+
+dir()
+denumd <- read.table("ch29_umd_den.snpden",header=TRUE)
+denucd <- read.table("ch29_ucd_den.snpden",header=TRUE)
+denumd$assembly <- rep("umd",nrow(denumd))
+denucd$assembly <- rep("ucd",nrow(denucd))
+dendat <- rbind(denumd,denucd)
+pden <- ggplot(dendat,aes(x=BIN_START,y=SNP_COUNT,col=assembly)) +
+  geom_line(show.legend = FALSE)+
+  theme_grey()+
+  scale_color_brewer(palette = "Set1")
+pden
+pd
+
+
+qualch <- read.table("29_umd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+datum <- ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status),show.legend=FALSE)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+
+qualch <- read.table("29_ucd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+datuc <- ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status),show.legend=FALSE)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+pd
+
+
+ps <- plot_grid(datum,datuc,nrow=2,align="v")
+pg <- plot_grid(pd,pden,ps,nrow=3,rel_heights = c(1,0.4,0.4),align="hv")
+pg
+
+
+# ucd_comparison_27 -------------------------------------------------------
+
+library("ggplot2")
+library("cowplot")
+setwd("~/Google_Drive/paper/paper_graph/result/computation_time/ucd_comparison")
+dir()
+datumd <- read.table("27_umd.txt",header=FALSE)
+datumd <- datumd[1:3]
+datucd <- read.table("27_ucd.tsv",header=FALSE)
+head(datucd)
+colnames(datucd) <- c("chr","chunk","time")
+colnames(datumd)<- c("chr","chunk","time")
+datucd$assembly <- rep("ucd",length=nrow(datucd))
+datumd$assembly <- rep("umd",length=nrow(datumd))
+dattime <- rbind(datucd,datumd)
+dattime$chunk2 <- as.numeric(dattime$chunk * 1000000)
+pd <- ggplot(dattime,aes(x=chunk2,y=time,col=assembly))+
+  geom_point()+
+  geom_line()+
+  theme_grey()+
+  theme(legend.position = c(0.9,0.9))+
+  scale_color_brewer(palette = "Set1")
+pd
+
+dir()
+denumd <- read.table("ch27_umd_den.snpden",header=TRUE)
+denucd <- read.table("ch27_ucd_den.snpden",header=TRUE)
+denumd$assembly <- rep("umd",nrow(denumd))
+denucd$assembly <- rep("ucd",nrow(denucd))
+dendat <- rbind(denumd,denucd)
+pden <- ggplot(dendat,aes(x=BIN_START,y=SNP_COUNT,col=assembly)) +
+  geom_line(show.legend = FALSE)+
+  theme_grey()+
+  scale_color_brewer(palette = "Set1")
+pden
+pd
+
+
+qualch <- read.table("27_umd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+datum <- ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status),show.legend=FALSE)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+
+qualch <- read.table("27_ucd.bed",header = FALSE)
+colnames(qualch) <- c("chr","start","stop","status")
+postb <- ifelse(qualch$status=="CALLABLE",1,-0.25)
+qualch$postb <- postb
+qualch$ym <- rep(0,nrow(qualch))
+qualch$xma <- qualch$stop+1
+datuc <- ggplot()+
+  geom_rect(data=qualch,aes(xmin=start,xmax=xma,ymin=ym,ymax=postb,fill=status),show.legend=FALSE)+
+  scale_fill_brewer(palette = "Set1")+
+  theme(axis.ticks.y = element_blank(),
+        axis.text.y = element_blank())
+
+pd
+
+
+ps <- plot_grid(datum,datuc,nrow=2,align="v")
+pg <- plot_grid(pd,pden,ps,nrow=3,rel_heights = c(1,0.4,0.4),align="hv")
+pg
+
+##plot only density and time
+pgs <- plot_grid(pd,pden,nrow=2,rel_heights = c(1,0.4),align="hv")
+pgs
+
+# Gate_multihc ------------------------------------------------------------
+
+setwd("~/Google_Drive/paper/paper_graph/result/concordance/pruned")
+dir()
+library("ggsci")
+datmul <- read.table("multi25_fixed.tsv",header=TRUE)
+datcov <- read.table("Chr25_coverage.txt",header=FALSE)
+colnames(datcov) <- c("anims","coverage")
+datmul <-  datmul %>% inner_join(datcov)
+datmul <- datmul %>% filter(anims != "BSWCHEM120111313935")
+datmul <- datmul %>% mutate(prog=fct_recode(datmul$prog,HC_Multisample="HCmulti",Joint_Genotyping="gatk4"))
+pl1 <- ggplot(datmul) +
+  geom_point(aes(x=coverage,y=concor,col=prog))+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=12,face="bold"),
+        legend.position = c(0.73,0.2),
+        legend.background = element_rect(colour = "black"),
+        legend.title = element_blank())+
+  labs(y="Genotype Concordance")
+pl2 <- ggplot(datmul,aes(x=prog,y=concor,col=prog))+
+  geom_boxplot(show.legend = FALSE,outlier.shape = NA)+
+  geom_jitter(width=0.1,show.legend = FALSE,alpha=0.5,size=0.75)+
+  theme(axis.text = element_blank(),
+        axis.title = element_blank())+
+  scale_color_brewer(palette = "Set1")
+
+
+pc <- ggdraw()+
+  draw_plot(pl1,0,0,1,1)+
+  draw_plot(pl2,0.635,0.6,0.2,0.3)
+
+
+### Sensitivity 
+
+ps1 <- ggplot(datmul) +
+  geom_point(aes(x=coverage,y=NRS,col=prog),show.legend = FALSE)+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=12,face="bold"),
+        legend.position = c(0.73,0.4),
+        legend.background = element_rect(colour = "black"),
+        legend.title = element_blank())+
+  labs(y="Non Reference Sensitivity")
+ps2 <- ggplot(datmul,aes(x=prog,y=NRS,col=prog))+
+  geom_boxplot(show.legend = FALSE,outlier.shape = NA)+
+  geom_jitter(width=0.1,show.legend = FALSE,alpha=0.5,size=0.75)+
+  theme(axis.text = element_blank(),
+        axis.title = element_blank())+
+  scale_color_brewer(palette = "Set1")
+
+ps <- ggdraw()+
+  draw_plot(ps1,0,0,1,1)+
+  draw_plot(ps2,0.635,0.6,0.2,0.3)
+ps
+
+
+plot_grid(pc,ps,ncol=2)
+
+
+### Discrepancy
+
+
+pd1 <- ggplot(datmul) +
+  geom_point(aes(x=coverage,y=NRD,col=prog),show.legend = FALSE)+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")+
+  theme(axis.text = element_text(size=12),
+        axis.title = element_text(size=12,face="bold"),
+        legend.position = c(0.73,0.4),
+        legend.background = element_rect(colour = "black"),
+        legend.title = element_blank() )+
+  labs(y="Non Reference Discrepancy")
+pd2 <- ggplot(datmul,aes(x=prog,y=NRD,col=prog))+
+  geom_boxplot(show.legend = FALSE,outlier.shape = NA)+
+  geom_jitter(width=0.1,show.legend = FALSE,alpha=0.5,size=0.75)+
+  theme(axis.text = element_blank(),
+        axis.title = element_blank())+
+  scale_color_brewer(palette = "Set1")
+
+pd <- ggdraw()+
+  draw_plot(pd1,0,0,1,1)+
+  draw_plot(pd2,0.635,0.6,0.2,0.3)
+pd
+
+
+
+pm <- plot_grid(pc,ps,pd,ncol=3)
+ggsave(pm,filename = "pm.svg")
+
+### difference
+
+head(datmul)
+dathc <- datmul %>% filter(prog=="HC_Multisample" & anims != "BSWCHEM120111313935")
+datjg <- datmul %>% filter(prog=="Joint_Genotyping" & anims != "BSWCHEM120111313935")
+datcomb <- dathc %>% inner_join(datjg,by="anims") %>% 
+  mutate(diffcon=concor.x-concor.y,
+         diffsen=NRS.x-NRS.y,
+         diffdis=NRD.y-NRD.x)
+pw1 <- ggplot(datcomb) + 
+  geom_point(aes(x=coverage.y,y=diffcon,col=diffcon),show.legend = FALSE)+
+  theme_bw()+
+  scale_colour_viridis_c()
+
+pw2 <- ggplot(datcomb) + 
+  geom_point(aes(x=coverage.y,y=diffsen,col=diffcon),show.legend = FALSE)+
+  theme_bw()+
+  scale_colour_viridis_c()
+
+pw3 <- ggplot(datcomb) + 
+  geom_point(aes(x=coverage.y,y=diffdis,col=diffcon),show.legend = FALSE)+
+  theme_bw()+
+  scale_colour_viridis_c()
+pwa <- plot_grid(pw1,pw2,pw3,ncol=3)
+
+pwa
+plot_grid(pm,pwa,nrow=2,align="hv")
+
+
+
+# Com par_con -------------------------------------------------------------
+setwd("~/Google_Drive/paper/paper_graph/result/concordance/compar")
+dir()
+datcon <- read.table("all_con_3comapred.tsv",header=TRUE)
+datcon <- datcon %>% filter(anims != "BSWCHEM120111313935")
+head(datcon)
+datsm <- datcon %>% group_by(prog) %>% 
+  summarise(mcb=mean(concor),
+            msb=mean(NRS),
+            mdb=mean(NRD))
+datgat <- datcon
+
+
+datgat <- datcon %>% filter(prog=="gatk4")
+datgb <- datcon %>% filter(prog=="gatk4_beagle")
+head(datgb)
+datgtb <- datgat %>% 
+  inner_join(datgb,by=c("anims","chr")) %>% 
+  group_by(anims) %>% 
+  summarise(mcb=mean(concor.x),
+            msb=mean(NRS.x),
+            mdb=mean(NRD.x),
+            mct=mean(concor.y),
+            mst=mean(NRS.y),
+            mdt=mean(NRD.y)
+            ) %>% 
+  mutate(dc=mct-mcb,
+         ds=mst-msb,
+         dd=mdb-mdt) 
+head(datgtb)
+datgtb %>% top_n(n=1,wt=dc)
+datgtb %>% top_n(n=1,wt=ds)
+datgtb %>% top_n(n=1,wt=dd)
+## coverage
+
+datcov <- read.table("datcon.tsv",header=TRUE)
+head(datcov)
+datcov2 <-  datcov %>% group_by(anims) %>% summarise(coverage=mean(coverage))
+head(datcov2)
+ggplot(datcov2,aes(x=fct_reorder(anims,coverage),y=coverage))+
+  geom_point()+
+  theme(axis.text.x=element_text(angle=90))
+datcov2 %>% arrange(coverage) %>% head()
+
+head(datcov)
+datcovm <- datcov %>% group_by(prog,anims) %>% 
+  summarise(mcor=mean(concor),
+            msen=mean(NRS),
+            mdis=mean(NRD),
+            mcov=mean(coverage))
+
+head(datgtb)
+wilcox.test(datgtb$mcb,datgtb$mct)
+datsam <- datcon %>% filter(prog=="samtools")
+datstb <- datsam %>% 
+  inner_join(datgb,by=c("anims","chr")) %>% 
+  group_by(anims) %>% 
+  summarise(mcb=mean(concor.x),
+            msb=mean(NRS.x),
+            mdb=mean(NRD.x)
+  )
+datgraph <- datcon %>% filter(prog=="graphtyper_snps")
+datgrb <- datgraph %>% 
+  inner_join(datgb,by=c("anims","chr")) %>% 
+  group_by(anims) %>% 
+  summarise(mcb=mean(concor.x),
+            msb=mean(NRS.x),
+            mdb=mean(NRD.x)
+  )
+
+datgts <- datgtb %>% select(1:5)
+
+
+datgs <- datstb %>% inner_join(datgrb,by="anims")
+head(datgs)
+
+wilcox.test(datgs$mcb.x,datgs$mcb.y,paired = TRUE)
+wilcox.test(datgs$msb.x,datgs$msb.y,paired = TRUE)
+wilcox.test(datgs$mdb.x,datgs$mdb.y,paired = TRUE)
+
+
+
+head(datgs)
+head(datstb)
+head(datgrb)
+
+head(datcov)
+datc <- datcon %>% 
+  select(anims,chr,concor,prog) %>% 
+  filter(chr==1) %>% 
+  spread(key = prog,value = concor) 
+  
+library("MCMCglmm")
+### Without beagle
+datc <- datcon %>% filter(! str_detect(pattern = "beagle",datcon$prog)) %>% droplevels()
+datf <- MCMCglmm(data=datc,concor~prog,random=~chr+anims,family="gaussian",nit=50000)
+possummary(datf)
+plot(datf)
+posall <- posterior.mode(datf$VCV)
+posall["anims"]/sum(posall)
+### With beagle
+datc <- datcon %>% filter(str_detect(pattern = "beagle",datcon$prog)) %>% droplevels()
+datf <- MCMCglmm(data=datc,concor~prog,random=~chr+anims,family="gaussian",nit=50000)
+summary(datf)
+plot(datf)
+posall <- posterior.mode(datf$VCV)
+posall["anims"]/sum(posall)
+posterior.mode(datf$Sol)
+HPDinterval(datf$Sol)
+###Kruskal wallis
+head(datgs)
+kruskal.test(datcon$prog,datcon$NRD)
+### all data
+datf <- MCMCglmm(data=datcon,concor~prog+chr,random=~anims,family="gaussian",nit=50000)
+summary(datf)
+plot(datf)
+posall <- posterior.mode(datf$VCV)
+posall["anims"]/sum(posall)
+posterior.mode(datf$Sol)
+HPDinterval(datf$Sol)
+
+
+kruskal.test()
+
+
+head(datcon)
+datcon %>% filter(chr==1) %>% 
+ggplot(aes(x=prog,y=concor))+
+  theme_bw()+
+  geom_boxplot(aes(col=prog))+
+  geom_jitter(width=0.1,aes(col=prog))
+
+
+
+### graph with vcf
+setwd("~/Google_Drive/paper/paper_graph/result/concordance/wv")
+dir()
+datgr <- read.table("graph_wdb.tsv",header=TRUE)
+datgr <- datgr %>% filter(anims != "BSWCHEM120111313935")
+head(datgr)
+unique(datgr$prog)
+datgr %>% mutate(anims=fct_reorder(anims,concor)) %>%  
+ggplot() +
+  geom_point(aes(x=anims,y=concor,color=prog)) +
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90))
+ggplot(datgr) + 
+  geom_boxplot(aes(x=prog,y=NRD,col=prog),outlier.shape = NA) +
+  geom_jitter(aes(x=prog,y=NRD,col=prog),width=0.1)+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")
+
+
+datgr %>% group_by(prog) %>% summarise(mc=mean(concor),
+                                       ms=mean(NRS),
+                                       md=mean(NRD))
+datgrc <- datgr %>% select(anims,prog,concor) %>% spread(key = prog,value = concor)
+t.test(datgrc$graphtyper,datgrc$graphtyper_wvcf,paired=TRUE)
+datgrd <- datgr %>% select(anims,prog,NRD) %>% spread(key = prog,value = NRD)
+t.test(datgrd$graphtyper,datgrd$graphtyper_wvcf,paired=TRUE)
+
+
+
+ps <- ggplot(datgr) + 
+  geom_boxplot(aes(x=prog,y=NRS,col=prog),outlier.shape = NA, show.legend = FALSE) +
+  geom_jitter(aes(x=prog,y=NRS,col=prog),width=0.1, show.legend = FALSE)+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")
+pc <- ggplot(datgr) + 
+  geom_boxplot(aes(x=prog,y=concor,col=prog),outlier.shape = NA) +
+  geom_jitter(aes(x=prog,y=concor,col=prog),width=0.1)+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.15))+
+  scale_color_brewer(palette = "Set1")
+pd <- ggplot(datgr) + 
+  geom_boxplot(aes(x=prog,y=NRD,col=prog),outlier.shape = NA,show.legend = FALSE) +
+  geom_jitter(aes(x=prog,y=NRD,col=prog),width=0.1,show.legend = FALSE)+
+  theme_bw()+
+  scale_color_brewer(palette = "Set1")
+plot_grid(pc,ps,pd,ncol=3)
+
+
+### Filtering effect
+
+setwd("~/Google_Drive/paper/paper_graph/result/concordance/filter")
+datcov <- read.table("datcon.tsv",header=TRUE) %>% filter(anims != "BSWCHEM120111313935") %>% droplevels()
+head(datcov)
+datcov2 <-  datcov %>% group_by(anims) %>% summarise(coverage=mean(coverage))
+head(datcov2)
+ggplot(datcov2,aes(x=fct_reorder(anims,coverage),y=coverage))+
+  geom_point()+
+  theme(axis.text.x=element_text(angle=90))
+datcov2 %>% arrange(coverage) %>% head()
+
+head(datcov)
+datcovm <- datcov %>% group_by(prog,anims) %>% 
+  summarise(mcor=mean(concor),
+            msen=mean(NRS),
+            mdis=mean(NRD),
+            mcov=mean(coverage))
+datgat <- datcovm %>% filter(prog=="gatk4")
+head(datgat)
+#gatkfil 
+datgatfil <- read.table("gatk_fill_all.tsv",header=TRUE) %>% filter(anims != "BSWCHEM120111313935") %>% droplevels()
+head(datgatfil)
+datgatfil <- datgatfil %>% group_by(prog,anims) %>% 
+  summarise(mcor=mean(concor),
+            msen=mean(NRS),
+            mdis=mean(NRD))
+cover <- datgat[datgatfil$anims==datgat$anims,"mcov"]
+datgatfil$mcov <- cover
+
+datgatfil %>% 
+  group_by(prog) %>% 
+  summarise(mcor=mean(mcor),
+            msen=mean(msen),
+            mdis=mean(mdis)) %>% 
+  as.data.frame()
+
+
+datgraph <- datcovm %>% filter(prog=="graphtyper_snps")
+head(datgraph)
+datgraphfil <- read.table("graph_fill_all.tsv",header=TRUE) %>% filter(anims != "BSWCHEM120111313935") %>% droplevels()
+
+head(datgraphfil)
+datgraphfil <- datgraphfil %>% group_by(prog,anims) %>% 
+  summarise(mcor=mean(concor),
+            msen=mean(NRS),
+            mdis=mean(NRD))
+cover <- datgraph[datgraphfil$anims==datgraph$anims,"mcov"]
+datgraphfil$mcov <- cover
+
+## time tabulation
+library("tidyverse")
+library("ggsci")
+timetab <- read.table(pipe("pbpaste"),header=TRUE)
+timetab <- timetab %>% mutate(step=fct_relevel(timetab$step,"GATK_JointGenotyping","GATK_GenomicDBimport","GATK_HaplotypeCaller"))
+ggplot(timetab) +
+  geom_col(aes(x=prog,y=tot_time,fill=step),col="black",size=0.75)+
+  theme_bw()+
+  scale_fill_npg()+
+  theme(axis.text.x=element_text(size=14),
+        axis.title=element_blank(),
+        axis.text.y=element_text(size=14,angle=45),
+        legend.title = element_blank(),
+        legend.text = element_text(size=12),
+        aspect.ratio = 0.55,
+        legend.background = element_rect(colour = "black"))+
+  labs(y="CPU time (hours)")+
+  annotate(geom="label",label="n = 50",x=3.25,y=2200,size=12)+
+  coord_flip()
+setwd("~/Google_Drive/paper/paper_graph/result")
+ggsave(file="time_plot.svg")
+
+
+
+# ### Het and singleton stats per sample ----------------------------------
+library("tidyverse")
+datgatfil <- read.table(pipe("pbpaste"), header = FALSE)
+datgatfil <- datgatfil %>% filter(V3 != "BSWCHEM120111313935")
+### nonhomref column 5
+mean(datgatfil$V5)
+## het column 6
+mean(datgatfil$V6)
+##singleton column 11
+mean(datgatfil$V11)
+## get PSI (grep "PSI" gatk_fill_all.stats|grep -v "#" |pbcopy)
+datgatind <- read.table(pipe("pbpaste"), header = FALSE)
+head(datgatind)
+##het column 8
+mean(datgatind$V8)
+mean(datgatind$V9)
+
+
+### For graphtyper
+datgraphfil <- read.table(pipe("pbpaste"), header = FALSE)
+datgraphfil <- datgraphfil %>% filter(V3 != "BSWCHEM120111313935")
+### nonhomref column 5
+mean(datgraphfil$V5)
+## het column 6
+mean(datgraphfil$V6)
+##singleton column 11
+mean(datgraphfil$V11)
+## get PSI (grep "PSI" gatk_fill_all.stats|grep -v "#" |pbcopy)
+datgraphind <- read.table(pipe("pbpaste"), header = FALSE)
+head(datgraphind)
+##het column 8
+mean(datgraphind$V8)
+mean(datgraphind$V9)
+
+### For Samtools
+datsamfil <- read.table(pipe("pbpaste"), header = FALSE)
+datsamfil <- datsamfil %>% filter(V3 != "BSWCHEM120111313935")
+### nonhomref column 5
+mean(datsamfil$V5)
+## het column 6
+mean(datsamfil$V6)
+##singleton column 11
+mean(datsamfil$V11)
+## get PSI (grep "PSI" gatk_fill_all.stats|grep -v "#" |pbcopy)
+datsamind <- read.table(pipe("pbpaste"), header = FALSE)
+head(datsamind)
+##het column 8
+mean(datsamind$V8)
+mean(datsamind$V9)
+
+
+
+
+# revised ucd comp --------------------------------------------------------
+
+library("ggplot2")
+library("cowplot")
+setwd("~/Google_Drive/paper/paper_graph/result/computation_time/ucd_comparison")
+dir()
+datumd <- read.table("12_temp_corr.txt",header=FALSE)
+datumd <- datumd[1:3]
+datucd <- read.table("ch12_ucd.tsv",header=FALSE)
+head(datucd)
+colnames(datucd) <- c("chr","chunk","time")
+colnames(datumd)<- c("chr","chunk","time")
+datucd$assembly <- rep("ucd",length=nrow(datucd))
+datumd$assembly <- rep("umd",length=nrow(datumd))
+dattime <- rbind(datucd,datumd)
+dattime$chunk2 <- as.numeric(dattime$chunk * 1000000)
+pd <- ggplot(dattime,aes(x=chunk2,y=time,col=assembly))+
+  geom_point()+
+  geom_line()+
+  theme_grey()+
+  theme(legend.position = c(0.9,0.85),
+        legend.background = element_rect(colour = "black"),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=12),
+        axis.text = element_text(size=12))+
+  scale_color_brewer(palette = "Set1")
+pd
+View(dattime %>% filter(assembly=="umd"))
+dir()
+denumd <- read.table("ch12_umd_den.snpden",header=TRUE)
+denucd <- read.table("ch12_ucd_den.snpden",header=TRUE)
+denumd$assembly <- rep("umd",nrow(denumd))
+denucd$assembly <- rep("ucd",nrow(denucd))
+dendat <- rbind(denumd,denucd)
+#remove 0 entry
+## need to set limit for the threshold to join
+dendat <- dendat %>% mutate(BIN_START=BIN_START+1000000)
+pden <- ggplot(dendat,aes(x=BIN_START,y=SNP_COUNT,col=assembly)) +
+  geom_line(show.legend = FALSE)+
+  theme_grey()+
+  scale_color_brewer(palette = "Set1")+
+  theme(axis.text = element_text(size=12))
+pden
+pd
+
+##plot only density and time
+pgs <- plot_grid(pd,pden,nrow=2,rel_heights = c(1,0.4),align = "v")
+pgs
+ggsave("ch12_ucm.svg")
+
+
+
+# revised ucd comp chr12 --------------------------------------------------------
+
+library("ggplot2")
+library("cowplot")
+setwd("~/Google_Drive/paper/paper_graph/result/computation_time/ucd_comparison")
+dir()
+datumd <- read.table("12_temp_corr.txt",header=FALSE)
+datumd <- datumd[1:3]
+datucd <- read.table("ch12_ucd.tsv",header=FALSE)
+head(datucd)
+colnames(datucd) <- c("chr","chunk","time")
+colnames(datumd)<- c("chr","chunk","time")
+datucd$assembly <- rep("ucd",length=nrow(datucd))
+datumd$assembly <- rep("umd",length=nrow(datumd))
+dattime <- rbind(datucd,datumd)
+dattime$chunk2 <- as.numeric(dattime$chunk * 1000000)
+pd <- ggplot(dattime,aes(x=chunk2,y=time,col=assembly))+
+  geom_point()+
+  geom_line()+
+  theme_grey()+
+  theme(legend.position = c(0.9,0.85),
+        legend.background = element_rect(colour = "black"),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=12),
+        axis.text = element_text(size=12))+
+  scale_color_brewer(palette = "Set1")+
+  scale_y_continuous(breaks = seq(0,6000,2000),limits = c(0,6000))
+pd
+View(dattime %>% filter(assembly=="umd"))
+dir()
+denumd <- read.table("ch12_umd_den.snpden",header=TRUE)
+denucd <- read.table("ch12_ucd_den.snpden",header=TRUE)
+denumd$assembly <- rep("umd",nrow(denumd))
+denucd$assembly <- rep("ucd",nrow(denucd))
+dendat <- rbind(denumd,denucd)
+#remove 0 entry
+## need to set limit for the threshold to join
+dendat <- dendat %>% mutate(BIN_START=BIN_START+1000000)
+pden <- ggplot(dendat,aes(x=BIN_START,y=SNP_COUNT,col=assembly)) +
+  geom_line(show.legend = FALSE)+
+  theme_grey()+
+  scale_color_brewer(palette = "Set1")+
+  theme(axis.text = element_text(size=12))+
+  scale_y_continuous(breaks = seq(0,25000,5000),limits = c(0,25000))
+pden
+pd
+
+##plot only density and time
+par(mfrow=c(2,1))
+pgs <- plot_grid(pd,pden,nrow=2,rel_heights = c(1,0.4),align = "v")
+pgs
+ggsave("ch12_ucm.svg")
+
+
+install.packages("plotrix")
+library("plotrix")
