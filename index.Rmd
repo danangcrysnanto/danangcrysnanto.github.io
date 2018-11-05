@@ -14,7 +14,7 @@ I mostly using Snakemake for workflow design and management.
 
 Besides of that I am interested in data science particularly reproducible big data analysis and interactive big data visualization.  
 
-I speak R, Python and Bash scripting. 
+I mostly used Python 3, R and shell scripting. 
 
 Before embarking for a PhD in Zurich, I studied for [MSc in Quantitative Genetics and Genome Analysis](http://qgen.bio.ed.ac.uk/) at the University of Edinburgh UK, where I received two awards for my master's project:  
 

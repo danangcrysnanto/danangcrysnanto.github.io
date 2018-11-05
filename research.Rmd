@@ -18,7 +18,7 @@ In this work, I showed that using cattle WGS (the first of its kind in livestock
 
 
 #### **Working paper**  
-Danang Crysnanto, Hubert Pausch. 2018. "Accurate sequence variant genotyping in cattle using genome graphs"
+Danang Crysnanto, Christine Wurmser, Hubert Pausch. 2018. ["Accurate sequence variant genotyping in cattle using genome graphs"](https://www.biorxiv.org/content/early/2018/11/04/460345). *bioRxiv* from 4th November 2018.
 </font>
 
 ## Past  
@@ -31,7 +31,7 @@ I analysed the 35 genomes across species in *Drosophilidae* and showed that the 
 
 
 #### **Preprint**  
-Danang Crysnanto, Darren Obbard. 2018. ["Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group"](https://www.biorxiv.org/content/early/2018/09/29/429894).*Biorxiv* from 29th September 2018.
+Danang Crysnanto, Darren Obbard. 2018. ["Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group"](https://www.biorxiv.org/content/early/2018/09/29/429894). *bioRxiv* from 29th September 2018.
 </font>
 
 
