@@ -17,8 +17,14 @@ A natural data structure that can represents these variants jointly is genome-gr
 In this work, I showed that using cattle WGS (the first of its kind in livestock population) genome-graph genotyper is comparable, and even has better quality metrics (e.g genotype concordance, mendelian accuracy) than the current standard variant-calling tools that are strictly limited to the linear reference genome.
 
 
-#### **Working paper**  
+#### **Preprint**  
 Danang Crysnanto, Christine Wurmser, Hubert Pausch. 2018. ["Accurate sequence variant genotyping in cattle using genome graphs"](https://www.biorxiv.org/content/early/2018/11/04/460345). *bioRxiv* from 4th November 2018.
+
+#### **Conference**
+Genome Informatics. Wellcome Genome Campus Cambridge. *17-20 September 2018*
+
+Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge. *21-22 September 2018 (Oral Presenter)*
+
 </font>
 
 ## Past  
@@ -32,6 +38,10 @@ I analysed the 35 genomes across species in *Drosophilidae* and showed that the 
 
 #### **Preprint**  
 Danang Crysnanto, Darren Obbard. 2018. ["Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group"](https://www.biorxiv.org/content/early/2018/09/29/429894). *bioRxiv* from 29th September 2018.
+
+#### **Conference**
+52nd Population Genetics. Oxford. *3-6 January 2019 (Invited Oral Speaker)*
+
 </font>
 
 

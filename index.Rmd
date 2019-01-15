@@ -7,12 +7,12 @@
 ### Doctoral Student at ETH Zurich Switzerland  
 <br></br>
 <br></br>
-<font size="3.5">I am a first year PhD student at [Animal Genomics](http://www.ag.ethz.ch/) ETH Zurich Switzerland.  
+<font size="3.5">I am a second year PhD student at [Animal Genomics](http://www.ag.ethz.ch/) ETH Zurich Switzerland.  
 
 I am now responsible for setting up the pipelines for analyzing population level (hundreds to thousands) of whole genome livestock sequencing data. 
 I mostly using Snakemake for workflow design and management.
 
-Besides of that I am interested in data science particularly reproducible big data analysis and interactive big data visualization.  
+In the other sides, I am interested in data science particularly reproducible big data analysis and interactive big data visualization.  
 
 I mostly used Python 3, R and shell scripting. 
 
