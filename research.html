@@ -22,8 +22,9 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -98,9 +99,6 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
-summary {
-  display: list-item;
-}
 </style>
 
 
@@ -115,6 +113,7 @@ body {
   padding-top: 65px;
   margin-top: -65px;
 }
+
 .section h2 {
   padding-top: 65px;
   margin-top: -65px;
@@ -134,43 +133,6 @@ body {
 .section h6 {
   padding-top: 65px;
   margin-top: -65px;
-}
-.dropdown-submenu {
-  position: relative;
-}
-.dropdown-submenu>.dropdown-menu {
-  top: 0;
-  left: 100%;
-  margin-top: -6px;
-  margin-left: -1px;
-  border-radius: 0 6px 6px 6px;
-}
-.dropdown-submenu:hover>.dropdown-menu {
-  display: block;
-}
-.dropdown-submenu>a:after {
-  display: block;
-  content: " ";
-  float: right;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 5px 0 5px 5px;
-  border-left-color: #cccccc;
-  margin-top: 5px;
-  margin-right: -10px;
-}
-.dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
-}
-.dropdown-submenu.pull-left {
-  float: none;
-}
-.dropdown-submenu.pull-left>.dropdown-menu {
-  left: -100%;
-  margin-left: 10px;
-  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -192,77 +154,18 @@ $(document).ready(function () {
 });
 </script>
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
-
-<style type="text/css">
-.tabset-dropdown > .nav-tabs {
-  display: inline-table;
-  max-height: 500px;
-  min-height: 44px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
-  font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
-}
-
-.tabset-dropdown > .nav-tabs > li.active {
-  display: block;
-}
-
-.tabset-dropdown > .nav-tabs > li > a,
-.tabset-dropdown > .nav-tabs > li > a:focus,
-.tabset-dropdown > .nav-tabs > li > a:hover {
-  border: none;
-  display: inline-block;
-  border-radius: 4px;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
-  display: block;
-  float: none;
-}
-
-.tabset-dropdown > .nav-tabs > li {
-  display: none;
-}
-</style>
-
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
 </script>
 
 <!-- code folding -->
+
 
 
 
@@ -321,44 +224,39 @@ $(document).ready(function () {
 
 
 <p><br></br></p>
-<div id="section" class="section level1 tabset">
-<h1></h1>
-<div id="current" class="section level2">
-<h2>Current</h2>
+<!-- # {.tabset} -->
 <div id="genome-graph-for-variant-genotyping-in-cattle" class="section level3">
 <h3>Genome graph for variant genotyping in cattle</h3>
 <p><font size="3.5"></p>
 <p>Linear reference genome is an oversimplification as it fails to account for the segregated variants in the populations, resulting in overreporting the alleles in the reference, widely known as reference allele bias.</p>
 <p>A natural data structure that can represents these variants jointly is genome-graph. In this work, I showed that using cattle WGS (the first of its kind in livestock population) genome-graph genotyper is comparable, and even has better quality metrics (e.g genotype concordance, mendelian accuracy) than the current standard variant-calling tools that are strictly limited to the linear reference genome.</p>
-<div id="preprint" class="section level4">
-<h4><strong>Preprint</strong></h4>
-<p>Danang Crysnanto, Christine Wurmser, Hubert Pausch. 2018. <a href="https://www.biorxiv.org/content/early/2018/11/04/460345">“Accurate sequence variant genotyping in cattle using genome graphs”</a>. <em>bioRxiv</em> from 4th November 2018.</p>
+<div id="publication" class="section level4">
+<h4><strong>Publication</strong></h4>
+<p>Danang Crysnanto, Christine Wurmser, Hubert Pausch. 2018. <a href="https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x">Accurate sequence variant genotyping in cattle using genome graphs</a>. <em>Genetics Selection Evolution</em>. <a href="https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines">Github repository</a>. <a href="https://www.biorxiv.org/content/10.1101/460345v2"><em>bioRxiv</em></a> from 4<sup>th</sup> November 2018.</p>
 </div>
 <div id="conference" class="section level4">
 <h4><strong>Conference</strong></h4>
 <p>Genome Informatics. Wellcome Genome Campus Cambridge. <em>17-20 September 2018</em></p>
-<p>Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge. <em>21-22 September 2018 (Oral Presenter)</em></p>
-<p></font></p>
+<p>Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge. <em>21-22 September 2018 (Oral Presenter, Long talk)</em></p>
+<p></font> <br></br> <br></br></p>
 </div>
 </div>
+<div id="past" class="section level3">
+<h3>Past</h3>
 </div>
-<div id="past" class="section level2">
-<h2>Past</h2>
 <div id="the-evolution-of-rnai-gene-duplicates-in-drosophila" class="section level3">
 <h3>The evolution of RNAi gene duplicates in <em>Drosophila</em></h3>
 <p><font size="3.5"></p>
 <p>Genes involved in RNA inteference pathway are prevasively duplicated in <em>D obscura</em> group.<br />
 I analysed the 35 genomes across species in <em>Drosophilidae</em> and showed that the duplication are adaptive and occurred independently across <em>Drosophila</em> lineages, implying that many selective agents may be responsible.</p>
-<div id="preprint-1" class="section level4">
-<h4><strong>Preprint</strong></h4>
-<p>Danang Crysnanto, Darren Obbard. 2018. <a href="https://www.biorxiv.org/content/early/2018/09/29/429894">“Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group”</a>. <em>bioRxiv</em> from 29th September 2018.</p>
+<div id="publication-1" class="section level4">
+<h4><strong>Publication</strong></h4>
+<p>Danang Crysnanto, Darren Obbard. 2018. <a href="https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0">Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group</a>. <em>BMC Evolutionary Biology</em>. <a href="https://github.com/danangcrysnanto/RNAi-duplication">Github repository</a>. <a href="https://www.biorxiv.org/content/10.1101/429894v3"><em>bioRxiv</em></a> from 29<sup>th</sup> September 2018.</p>
 </div>
 <div id="conference-1" class="section level4">
 <h4><strong>Conference</strong></h4>
 <p>52nd Population Genetics. Oxford. <em>3-6 January 2019 (Invited Oral Speaker)</em></p>
 <p></font></p>
-</div>
-</div>
 </div>
 </div>
 
