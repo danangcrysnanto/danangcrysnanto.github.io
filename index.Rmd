@@ -24,3 +24,22 @@ Before embarking for a PhD in Zurich, I studied for [MSc in Quantitative Genetic
 <br></br>
  
 </font>
+
+### **Publications** 
+<script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
+Danang Crysnanto, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). *Genetics Selection Evolution*. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines). [*bioRxiv*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018.
+
+
+Danang Crysnanto, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). *BMC Evolutionary Biology*. [Github repository](https://github.com/danangcrysnanto/RNAi-duplication). [*bioRxiv*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018.
+
+
+<br></br>
+
+
+### **Conferences**
+
+Genome Informatics. Wellcome Genome Campus Cambridge. *17-20 September 2018*
+
+Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge. *21-22 September 2018 (Oral Presenter, Long talk)*  
+
+52nd Population Genetics. Oxford. *3-6 January 2019 (Invited Oral Speaker)*
