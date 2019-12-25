@@ -15,15 +15,15 @@ I have expertise in the computational methods to analyse genomic big data. I hav
 I am currently working to integrate millions of bovine genetic variants into a single comprehensive graph-based reference representation. [My recent work](https://www.biorxiv.org/content/10.1101/2019.12.20.882423v1) showed that using reference graphs I implemented reduce the genomic sequencing mapping error by more than 30% compared to the current practices that represent reference genome as a linear string. 
 
 
-I am highly experienced in designing [bioinformatics pipelines](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x) for variant discovery in large-scale and population level (thousands) of whole genome sequencing data. I mostly using *Snakemake* for pipelines design and management.
+I am highly experienced in designing [bioinformatics pipelines](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x) for variant discovery in large-scale population level (scalable to thousands) of whole genome sequencing data. I mostly using *Snakemake* for pipelines design and management.
 
 Previously I studied [MSc in Quantitative Genetics and Genome Analysis](http://qgen.bio.ed.ac.uk/) at the University of Edinburgh UK, where I received two awards for my master's project:  
 
 (1)  The Douglas Falconer Prize by Institute of Evolutionary of Biology Edinburgh UK for the best *Master's Thesis*.
-(2)  [Sir Kenneth Mather Memorial Prize](http://www.genetics.org.uk/medals-and-prizes/sir-kenneth-mather-memorial-prize/sir-kenneth-mather-memorial-prize-2016-17/) by the UK Genetics Society for an outstanding work in Population and Quantitative Genetics.
+(2)  [Sir Kenneth Mather Memorial Prize](http://www.genetics.org.uk/medals-and-prizes/sir-kenneth-mather-memorial-prize/sir-kenneth-mather-memorial-prize-2016-17/) by the UK Genetics Society for an outstanding work in Population Genomics.
 
 
-I am a huge supporter for *reproducible* and *open* sciences in computational research. I will make efforts to make all *papers* I published (including *codes*), *poster*, and *presentation* to be publicly available. 
+I am a huge supporter for *reproducible* and *open* sciences in computational research. I will make efforts to make all *papers* I published (including *codes*), *posters*, and *presentations* I present in the conferences to be publicly available. 
 
 </font>
 <br></br>
@@ -35,10 +35,10 @@ I am a huge supporter for *reproducible* and *open* sciences in computational re
 
 Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/703439v1) from 16<sup>th</sup> July 2019.
 
-**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). *Genetics Selection Evolution*.  [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
+**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). Published in: *Genetics Selection Evolution*.  [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
 
 
-**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). *BMC Evolutionary Biology*. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018. 
+**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). Published in: *BMC Evolutionary Biology*. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018. 
 [Github repository](https://github.com/danangcrysnanto/RNAi-duplication).
 
 <br></br>
@@ -48,9 +48,9 @@ Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and 
 
 Plant and Animal Genomes Conference (PAG). San Diego USA. Mapping sequencing reads to bovine genome graphs. 11-15 Jan 2020. *Selected Oral Speaker*
 
-Genome Informatics and Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge UK. Evaluation of genome graph-based variant genotyping in cattle. 21-22 Sept 2018. *Selected Oral Presenter, Long talk*. [Presentation Slide](https://doi.org/10.6084/m9.figshare.11454906.v1).
+Genome Informatics and Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge UK. Evaluation of genome graph-based variant genotyping in cattle. 21-22 Sept 2018. *Selected Oral Presenter, Long talk*. [Presentation slides](https://doi.org/10.6084/m9.figshare.11454906.v1).
 
-52nd Population Genetics. Oxford UK. Widespread gene duplications in *Drosophila* immune system. 3-6 Jan 2019. *Invited Award Winner Speaker*. [Presentation Slide](https://doi.org/10.6084/m9.figshare.11454900.v1).
+52nd Population Genetics. Oxford UK. Widespread gene duplications in *Drosophila* immune system. 3-6 Jan 2019. *Invited Award Winner Speaker*. [Presentation slides](https://doi.org/10.6084/m9.figshare.11454900.v1).
 
 <br></br>
 
