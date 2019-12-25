@@ -7,42 +7,56 @@
 ### Doctoral Student at ETH Zurich Switzerland  
 <br></br>
 <br></br>
-<font size="3.5">I am a second year PhD student at [Animal Genomics](http://www.ag.ethz.ch/) ETH Zurich Switzerland.  
+<font size="3">I am a third year PhD student at [Animal Genomics](http://www.ag.ethz.ch/) ETH Zurich Switzerland. 
 
-I am now responsible for setting up the pipelines for analyzing population level (hundreds to thousands) of whole genome livestock sequencing data. 
-I mostly using Snakemake for workflow design and management.
 
-In the other sides, I am interested in data science particularly reproducible big data analysis and interactive big data visualization.  
+I am interested in the computational methods to analyse genomic big data. I am highly experienced in using data science stacks e.g., *R*, *Tidyverse*, *Python*, *Jupyter*. 
 
-I mostly used Python 3, R, shell scripting and JavaScript (lately). 
+I am currently working to integrate millions of bovine genetic variants into a single comprehensive graph-based reference representation, a significant advance over current practices that represent reference genome as a linear string.
 
-Before embarking for a PhD in Zurich, I studied for [MSc in Quantitative Genetics and Genome Analysis](http://qgen.bio.ed.ac.uk/) at the University of Edinburgh UK, where I received two awards for my master's project:  
 
-(1)  The Douglas Falconer Prize by Institute of Evolutionary of Biology Edinburgh UK  
+I am also highly experienced in designing pipelines for variant discovery in population level (hundreds to thousands) of whole genome sequencing data. I mostly using *Snakemake* for pipelines design and management.
 
-(2)  [Sir Kenneth Mather Memorial Prize](http://www.genetics.org.uk/medals-and-prizes/sir-kenneth-mather-memorial-prize/sir-kenneth-mather-memorial-prize-2016-17/) by the UK Genetics Society for an outstanding work in Population and Quantitative Genetics  
-<br></br>
- 
+Previously I studied [MSc in Quantitative Genetics and Genome Analysis](http://qgen.bio.ed.ac.uk/) at the University of Edinburgh UK, where I received two awards for my master's project:  
+
+(1)  The Douglas Falconer Prize by Institute of Evolutionary of Biology Edinburgh UK for the best *Master's Thesis*.
+(2)  [Sir Kenneth Mather Memorial Prize](http://www.genetics.org.uk/medals-and-prizes/sir-kenneth-mather-memorial-prize/sir-kenneth-mather-memorial-prize-2016-17/) by the UK Genetics Society for an outstanding work in Population and Quantitative Genetics.
+
+
+I am a huge supporter for *reproducible* and *open* science in computational research. I will make efforts to make all *papers* I published (including *codes*), *poster*, and *presentation* to be publicly available. 
+
 </font>
+<br></br>
 
 ### **Publications** 
 <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
 
-Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*bioRxiv*](https://www.biorxiv.org/content/10.1101/703439v1) from 16<sup>th</sup> July 2019.
+**Danang Crysnanto**, Hubert Pausch. Sequence read mapping and variant discovery from bovine breed-specific augmented reference graphs. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/2019.12.20.882423v1) from 20<sup>th</sup> December 2019. [Github repository](https://github.com/danangcrysnanto/bovine-graphs-mapping).
 
-**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). *Genetics Selection Evolution*. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines). [*bioRxiv*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018.
+Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/703439v1) from 16<sup>th</sup> July 2019.
+
+**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). *Genetics Selection Evolution*.  [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
 
 
-**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). *BMC Evolutionary Biology*. [Github repository](https://github.com/danangcrysnanto/RNAi-duplication). [*bioRxiv*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018.
-
+**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). *BMC Evolutionary Biology*. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018. 
+[Github repository](https://github.com/danangcrysnanto/RNAi-duplication).
 
 <br></br>
 
 
-### **Conferences**
+### **Conferences and Talks **
 
-Genome Informatics. Wellcome Genome Campus Cambridge. *17-20 September 2018*
+Plant and Animal Genomes Conference (PAG). San Diego USA. *12 January 2020 (Selected Oral Speaker)*
 
-Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge. *21-22 September 2018 (Oral Presenter, Long talk)*  
+Genome Informatics. Wellcome Genome Campus Cambridge UK. *17-20 September 2018*
 
-52nd Population Genetics. Oxford. *3-6 January 2019 (Invited Oral Speaker)*
+Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge UK. *21-22 September 2018 (Selected Oral Presenter, Long talk)*. [Presentation Slide](https://doi.org/10.6084/m9.figshare.11454906.v1).
+
+52nd Population Genetics. Oxford UK. *3-6 January 2019 (Invited Award Winner Speaker)*. [Presentation Slide](https://doi.org/10.6084/m9.figshare.11454900.v1).
+
+<br></br>
+
+### **Contact **      
+
+<i class="far fa-envelope"></i>    <a href="mailto:danangcrysnanto@gmail.com">danangcrysnanto@gmail.com</a> <br>
+<i class="fab fa-twitter"></i>     <a href="https://twitter.com/crdanang">@crdanang</a> 
