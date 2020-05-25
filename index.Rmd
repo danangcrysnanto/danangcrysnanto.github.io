@@ -31,9 +31,8 @@ I am a huge supporter for *reproducible* and *open* sciences in computational re
 ### **Publications** 
 <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
 
-**Danang Crysnanto**, Hubert Pausch. Sequence read mapping and variant discovery from bovine breed-specific augmented reference graphs. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/2019.12.20.882423v1) from 20<sup>th</sup> December 2019. [Github repository](https://github.com/danangcrysnanto/bovine-graphs-mapping).
+**Danang Crysnanto**, Hubert Pausch. Bovine breed-specific augmented reference graphs facilitate accurate sequence read mapping and unbiased variant discovery. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/2019.12.20.882423v3) from 20<sup>th</sup> December 2019. [Github repository](https://github.com/danangcrysnanto/bovine-graphs-mapping).
 
-Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/703439v1) from 16<sup>th</sup> July 2019.
 
 **Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). Published in: *Genetics Selection Evolution*.  [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
 
@@ -41,12 +40,15 @@ Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and 
 **Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). Published in: *BMC Evolutionary Biology*. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018. 
 [Github repository](https://github.com/danangcrysnanto/RNAi-duplication).
 
+Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*BMC Genomics*](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-6446-y) from 16<sup>th</sup> July 2019.
+
 <br></br>
 
 
 ### **Conferences and Talks **
 
-Plant and Animal Genomes Conference (PAG). San Diego USA. Mapping sequencing reads to bovine genome graphs. 11-15 Jan 2020. *Selected Oral Speaker*
+Plant and Animal Genomes Conference (PAG). San Diego USA. Mapping sequencing reads to bovine genome graphs. 11-15 Jan 2020. *Selected Oral Speaker*. [Presentation slides](https://doi.org/10.6084/m9.figshare.11494185.v1) and 
+[Poster presentation](https://doi.org/10.6084/m9.figshare.11494185.v1). 
 
 Genome Informatics and Cambridge Livestock Genomics Meeting. Wellcome Genome Campus Cambridge UK. Evaluation of genome graph-based variant genotyping in cattle. 21-22 Sept 2018. *Selected Oral Presenter, Long talk*. [Presentation slides](https://doi.org/10.6084/m9.figshare.11454906.v1).
 
