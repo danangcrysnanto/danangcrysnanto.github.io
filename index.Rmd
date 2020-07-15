@@ -31,16 +31,24 @@ I am a huge supporter for *reproducible* and *open* sciences in computational re
 ### **Publications** 
 <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
 
-**Danang Crysnanto**, Hubert Pausch. Bovine breed-specific augmented reference graphs facilitate accurate sequence read mapping and unbiased variant discovery. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/2019.12.20.882423v3) from 20<sup>th</sup> December 2019. [Github repository](https://github.com/danangcrysnanto/bovine-graphs-mapping).
+**Danang Crysnanto**, Hubert Pausch. Bovine breed-specific augmented reference graphs facilitate accurate sequence read mapping and unbiased variant discovery. *Genome Biology In press*. bioRxiv Preprint from 20<sup>th</sup> December 2019. [Github repository](https://github.com/danangcrysnanto/bovine-graphs-mapping).
 
 
-**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). Published in: *Genetics Selection Evolution*.  [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/460345v2) from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
+**Danang Crysnanto**, Christine Wurmser, Hubert Pausch. 2018. [Accurate sequence variant genotyping in cattle using genome graphs](https://gsejournal.biomedcentral.com/articles/10.1186/s12711-019-0462-x). Published in: *Genetics Selection Evolution*.  bioRxiv Preprint from 4<sup>th</sup> November 2018. [Github repository](https://github.com/danangcrysnanto/Graph-genotyping-paper-pipelines).
 
 
-**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). Published in: *BMC Evolutionary Biology*. [*bioRxiv Preprint*](https://www.biorxiv.org/content/10.1101/429894v3) from 29<sup>th</sup> September 2018. 
+**Danang Crysnanto**, Darren Obbard. 2018. [Widespread gene duplication and adaptive evolution in the RNA-interference pathways of the Drosophila obscura group](https://bmcevolbiol.biomedcentral.com/articles/10.1186/s12862-019-1425-0). Published in: *BMC Evolutionary Biology*. bioRxiv Preprint from 29<sup>th</sup> September 2018. 
 [Github repository](https://github.com/danangcrysnanto/RNAi-duplication).
 
+
+Hiltpold M, Niu G, Kadri NK, **Crysnanto D**, Fang Z-H, Spengeler M, et al. (2020) [Activation of cryptic splicing in bovine WDR19 is associated with reduced semen quality and male fertility](https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1008804&rev=2) PLoS Genet 16(5) from 14<sup>th</sup> May 2020.
+
+
 Bhati M, Kadri NK, **Crysnanto D** ,  Pausch H. Assessing genomic diversity and signatures of selection in Original Braunvieh cattle using whole-genome sequencing data. [*BMC Genomics*](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-020-6446-y) from 16<sup>th</sup> July 2019.
+
+Adéla Nosková, Christine Wurmser, **Danang Crysnanto** et. al. [Deletion of porcine BOLL causes defective acrosomes and subfertility in Yorkshire boars](https://www.biorxiv.org/content/10.1101/2020.05.05.074724v1.abstract). bioRxiv from 7<sup>th</sup> May 2020.
+
+Zih-Hua Fang, Adéla Nosková, **Danang Crysnanto** et. al. [A 63-bp insertion in exon 2 of the porcine KIF21A gene is associated with arthrogryposis multiplex congenita](https://www.biorxiv.org/content/10.1101/2020.04.09.033761v1.abstract). bioRxiv from 10<sup>th</sup> April 2020. 
 
 <br></br>
 
